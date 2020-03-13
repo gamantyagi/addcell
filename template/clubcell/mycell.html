@@ -1,0 +1,50 @@
+{% extends 'clubcell/base2.html' %}
+{% load static %}
+{% block content %}
+            <div class="text-center login-card" style="height: 250px;"><img class="profile-img-card" src="{{path}}/media/user/{{user.details.PAN}}/profile_dp.jpg"><label>{{cell.clubname}} &nbsp;{{cell.rating}}</label>
+                <p class="text-center profile-name-card" style="height: 25px;width: 50px;"> </p>
+            </div><center><label style="width: 400px;height: 150px;">{{cell.about}}</label></center>
+
+            <div class="table-responsive" >
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>{{cell.clubname}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Email</td>
+                            <td>{{cell.off_email}}</td>
+                        </tr>
+                        <tr>
+                            <td style="height: 49.3333px;">TelNo</td>
+                            <td>{{cell.tel}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="width: 105.333px;">Reputation</th>
+                            <th style="width: 360px;">{{cell.reputation}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="width: 105.333px;">Location</td>
+                            <td>Block 13,208</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 105.333px;height: 49.3333px;">Ratings</td>
+                            <td>{{cell.rating}}/5</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+{% endblock %}

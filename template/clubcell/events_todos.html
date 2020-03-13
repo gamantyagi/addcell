@@ -1,0 +1,135 @@
+{% extends 'clubcell/base2.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 mt-3">
+            {% for event in events_todo %}
+            <div class="card" style="margin-bottom:20px;">
+                <div class="card-horizontal" value="{{event.event_id}}" id="redirect{{event.eventname}}">
+                    <div class="img-square-wrapper">
+                        <img class="" src='{% static ""%}event.jpg' alt="Card image cap" style="max-width: 400px;">
+                    </div>
+                    <div class="card-body" onclick="window.location.href='{{path}}/club/eventtodo/{{event.event_uen}}'">
+                        <h3 class="card-title">{{event.eventname}}</h3>
+                        <h4 class="card-title">{{event.event_uen}}</h4>
+                        <p class="card-text">{{event.breif_about}}</p>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Last updated 3 mins ago</small>
+                    <div data-toggle="tooltip" title="Registration On/Off" style="float: right;" >
+                    <label class="switch" >
+                      <input class="showorhide" type="checkbox" {% if event.registration == True %}checked{% endif %}  id="{{event.eventname}}" value="{{event.event_id}}">
+                      <span class="slider round"></span>
+                    </label>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+
+
+<style>
+    #nb4 {background-color: #1f49c7;}
+
+    .card-horizontal {
+    display: flex;
+    flex: 1 1 auto;
+}
+</style>
+
+<style>
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 200px;
+  height: 50px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ffcc00;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: green;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(150px);
+  -ms-transform: translateX(150px);
+  transform: translateX(150px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>
+
+
+<script>
+$(document).ready(function(){
+
+
+
+  $(".showorhide").click(function(){
+  var elmValue = $(this).attr("value");
+  var Id = $(this).attr("id");
+  $.ajax({
+            url: "{{path}}/club/ajax/show_event_public",
+            type: "GET",
+            data: {
+                show: $("#" + Id).prop("checked"),
+                element: elmValue
+            },
+            success: function(result) {
+                alert(result);},
+            error: function(result){
+                alert("something gone wrong");}
+            });
+
+  });
+
+});
+</script>
+{% endblock %}

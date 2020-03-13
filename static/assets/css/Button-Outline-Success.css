@@ -1,0 +1,9 @@
+.btn-outline-success {
+  background: 0;
+  border: 0;
+  border: 2px solid green;
+  border-radius: 3px;
+  padding: 15px 30px;
+  padding-top: 20;
+}
+

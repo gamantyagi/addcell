@@ -1,0 +1,218 @@
+{% extends 'clubcell/base2.html' %}
+{% load static %}
+{% block content %}
+<div >
+<div class="card" style="max-width:850px; margin:auto; box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);">
+        <center style="color:black;"><H1><u>Create New Event</u></H1></center>
+
+    <div class="card-body">
+        <div class="container mt-3">
+              <form method="post" action="{{path}}/club/addevent/add/" >
+                              {% csrf_token %}
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" style="left: 10px; bottom: 10px;">Event name</span>
+              </div>
+              <input type="text" class="form-control" name="eventname" placeholder="event display name" style="max-width:50%;">
+                <div class="input-group-prepend">
+                <span class="input-group-text" style="left: 10px; bottom: 10px;">Season</span>
+              </div>
+              <input type="number" class="form-control" name="season"  placeholder="Season" value="01" style="max-width:30%;">
+
+            </div>
+
+                  <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" style="left: 10px; bottom: 10px;">Enter EUN</span>
+              </div>
+              <input type="text" class="form-control" maxlength="20" id="EUNS1" name="event_UAP"  placeholder="event unique name" style="max-width:100%; text-transform: uppercase;">
+
+            </div>
+
+                  <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" style="left: 10px; bottom: 10px;">Category</span>
+              </div>
+                      <div  class="form-control"  style="background-color: #ffffff; position: relative; min-width: 43%; max-width:43%;">
+                          <select name="cat" style="width: 100%;">
+                              <option value="CP">Competetion</option>
+                              <option value="CV">Concert</option>
+                              <option value="WS">Workshop</option>
+                            </select>
+
+                      </div>
+
+                      <div class="input-group-prepend">
+                <span class="input-group-text" style="left: 10px; bottom: 10px;">Held on</span>
+              </div>
+                      <input type="datetime-local"  name="heldon" class="form-control" style="max-width:43%;">
+                </div>
+
+          <div class="input-group mb-3">
+          <div class="input-group-prepend">
+
+                                <span class="input-group-text" style="left: 10px; bottom: 10px;">
+              <input type="checkbox" id="paidornot" name="paid" onchange="disable_input(this,'fee','fees')">
+                                    &nbsp; Paid </span>
+          </div>
+          <input type="number" class="form-control" id="fee" name="fee"  aria-label="Text input with checkbox">
+        </div>
+
+
+          <div class="input-group mb-3">
+          <div class="input-group-prepend">
+
+                                <span class="input-group-text"  style="left: 10px; bottom: 10px;">
+              <input type="checkbox" id="certificate" name="certificate" onchange="disable_input(this,'certificate_about','more about certificate (type, organization..,)')" >
+                                    &nbsp; Certificate </span>
+          </div>
+          <input type="text" class="form-control" value="" id="certificate_about" name="certificate_about"  aria-label="Text input with checkbox">
+        </div>
+
+          <div class="input-group mb-3">
+          <div class="input-group-prepend">
+
+                                <span class="input-group-text"  style="left: 10px; bottom: 10px;">
+              <input type="checkbox" name="dl" onchange="disable_input(this,'dl','more about duty leave (hostel, classes, conditions)')" >
+                                    &nbsp; Duty leave </span>
+          </div>
+          <input type="text" name="dl_about" value="" class="form-control" id="dl" aria-label="Text input with checkbox">
+        </div>
+
+                  <div class="input-group mb-4">
+                  <div class="input-group-prepend">
+
+                                        <span class="input-group-text" style="left: 10px; bottom: 10px; height:100%;">
+
+                                            &nbsp; Breif <br> about</span>
+                  </div>
+                      <textarea rows="3" class="form-control" name="breif_info" maxlength="120" placeholder="about this event (120 words)"></textarea>
+                </div>
+
+
+                  <div class="input-group mb-4">
+                  <div class="input-group-prepend">
+
+                                        <span class="input-group-text" style="left: 10px; bottom: 10px; height:100%;">
+
+                                            &nbsp; Detail <br> about</span>
+                  </div>
+                      <textarea rows="5" class="form-control" name="detail_info" maxlength="2000" placeholder="full details about this event (HTML tags supported)"></textarea>
+                </div>
+
+
+                  <div class="input-group mb-4">
+                  <div class="input-group-prepend">
+
+                                        <span class="input-group-text" style="left: 10px; bottom: 10px; height:100%;">
+
+                                            &nbsp; Tags</span>
+                  </div>
+                      <textarea rows="2" name="tags_info"   class="form-control" id="taginput" maxlength="100"  placeholder="relative tags that represent your event (#tag1, #tag2)"></textarea>
+                </div>
+                <br><br><center>
+                <button type="Submit" class="btn btn-primary btn-lg">Add event</button>
+              </center>
+          </form>
+        </div>
+
+  </div>
+</div>
+</div>
+
+<style>
+#addcellb:hover {
+  background-color: #0066cc;
+}
+#nb3 {background-color: #1f49c7;}
+
+.disableinput {
+background-color: white;
+}
+</style>
+
+
+<script>
+$("#fees").hide();
+$(document).ready(function(){
+            $(".field-wrapper .field-placeholder").on("click", function () {
+                $(this).closest(".field-wrapper").find("input").focus();
+            });
+            $(".field-wrapper input").on("keyup", function () {
+                var value = $.trim($(this).val());
+                if (value) {
+                    $(this).closest(".field-wrapper").addClass("hasValue");
+                } else {
+                    $(this).closest(".field-wrapper").removeClass("hasValue");
+                }
+            });
+
+$("#EUNS1").on("keypress", function(e) {
+    if (( e.which <48 || (e.which < 65 && e.which >58) || (e.which > 90 && e.which < 97)  || e.which > 122) && e.which != 95)
+        e.preventDefault();
+});
+
+
+  function addFormatter (input, formatFn) {
+  let oldValue = input.value;
+
+  const handleInput = event => {
+    const result = formatFn(input.value, oldValue, event);
+    if (typeof result === 'string') {
+      input.value = result;
+    }
+
+    oldValue = input.value;
+  }
+
+  handleInput();
+  input.addEventListener("input", handleInput);
+}
+
+// Example implementation
+// HOF returning regex prefix formatter
+function regexPrefix (regex, prefix) {
+  return (newValue, oldValue) => regex.test(newValue) ? newValue : (newValue ? oldValue : prefix);
+}
+document.getElementById("EUNS1").onclick = function() {runcons(),pointatstart()};
+function runcons(){
+// Apply formatter
+const input = document.getElementById("EUNS1");
+addFormatter(input, regexPrefix(/_S01$/, '_S01'));
+}
+
+function pointatstart(){
+ var txtarea = document.getElementById("EUNS1");
+ var v = txtarea.value;
+ var l = v.length;
+ txtarea.selectionEnd= l-4;
+}
+
+
+});
+
+
+</script>
+
+<script src="https://raw.githubusercontent.com/sujeet100/ngHashtags/master/ngHashtags.js"></script>
+
+<script>
+    document.getElementById('fee').disabled = true;
+    document.getElementById('certificate_about').disabled = true;
+    document.getElementById('dl').disabled = true;
+
+    function disable_input(obj,inp,pld) {
+  if($(obj).is(":checked")){
+    document.getElementById(inp).disabled = false;
+    document.getElementById(inp).placeholder = pld;
+    $("#page-header-inner").addClass("sticky");
+  }else{
+    document.getElementById(inp).disabled = true;
+    document.getElementById(inp).placeholder = '';
+   document.getElementById(inp).value= '';
+  }
+
+}
+</script>
+
+{% endblock %}

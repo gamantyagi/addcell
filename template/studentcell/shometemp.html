@@ -1,0 +1,26 @@
+{% extends 'clubcell/base.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="projects-horizontal">
+        <div class="container">
+            <div class="intro">
+                <h2 class="text-center">Events </h2>
+                <p class="text-center">This is demo only, our website is under development</p>
+            </div>
+            <div class="row projects">
+                {% for event in events %}
+                <div class="col-sm-6 item">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-5"><a href="#"><img class="img-fluid" src='{% static ""%}event.jpg'></a></div>
+                        <div class="col">
+                            <h3 class="name">{{event.eventname}}</h3>
+                            <p class="description">Date: {{event.heldon}}<br>fee: {{event.fee}}<br>Type: {{event.eventtype}}<br>Duty leave: {{event.dl}} </p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

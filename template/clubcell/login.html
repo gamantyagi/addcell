@@ -1,0 +1,28 @@
+{% extends 'clubcell/base.html' %}
+
+{% block content %}
+<span class="navbar-text actions"> <a class="btn btn-light action-button" role="button" href="../">Log In</a>   <a class="text-white-50 login" role="button" href="{{path}}/signup">Sign Up</a></span></div>
+            </div>
+        </nav>
+    </div>
+<div class="login-dark" style="height: 700px;">
+        <form method="post">
+            {% csrf_token %}
+            {% for message in messages %}
+                    <center>
+                    <span class="badge badge-danger" >
+                        {{message}}
+                    </span>
+                    </center>
+            {% endfor %}
+            <h2 class="sr-only">Login Form</h2>
+            <div class="illustration"><i class="icon ion-ios-locked-outline"></i></div>
+            <div class="form-group"><input class="form-control" id="username" type="text" aria-label="Username" name="username" placeholder="username"></div>
+            <div class="form-group"><input class="form-control" id="password" type="password" name="password" placeholder="Password"></div>
+            <div class="form-group"><button id="lgsubmit" class="btn btn-primary btn-block" >Log In</button></div><a class="forgot" href="#">Forgot your email or password?</a></form>
+
+
+</div>
+
+
+{% endblock %}

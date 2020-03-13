@@ -1,0 +1,101 @@
+{% extends 'clubcell/base2.html' %}
+{% load static %}
+{% block content %}
+
+    <link rel="stylesheet" href='{% static "assets/css/post.css" %}'>
+
+<header>
+
+	<div class="container">
+
+		<div class="profile">
+
+			<div class="profile-image">
+
+				<img src="{{ user.details.profile_pic.thumbnail.200x250 }}" alt="">
+
+			</div>
+
+			<div class="profile-user-settings">
+
+				<h1 class="profile-user-name">{{ user.username }}</h1>
+
+				<button class="btn profile-edit-btn">Edit Profile</button>
+
+				<button class="btn profile-settings-btn" aria-label="profile settings"><i class="fas fa-cog" aria-hidden="true"></i></button>
+
+			</div>
+
+			<div class="profile-stats">
+
+				<ul>
+					<li><span class="profile-stat-count">164</span> posts</li>
+					<li><span class="profile-stat-count">188</span> followers</li>
+					<li><span class="profile-stat-count">206</span> following</li>
+				</ul>
+
+			</div>
+
+			<div class="profile-bio">
+
+				<p><span class="profile-real-name">Jane Doe</span> Lorem ipsum dolor sit, amet consectetur adipisicing elit 📷✈️🏕️</p>
+
+			</div>
+
+		</div>
+		<!-- End of profile section -->
+
+	</div>
+	<!-- End of container -->
+
+</header>
+
+<main>
+
+	<div class="container" style="width: 80%;">
+
+		<div class="gallery">
+
+			{% for post in posts %}
+
+			<div class="gallery-item" tabindex="0" style="max-width: 700px; max-height:800px;">
+
+				<img src="{{ post.image.thumbnail.640x480 }}" class="gallery-image" alt="">
+
+				<div class="gallery-item-info">
+
+					<ul>
+						<li class="gallery-item-likes"><span class="visually-hidden">Likes:</span><i class="fas fa-heart" aria-hidden="true"></i> 56</li>
+						<li class="gallery-item-comments"><span class="visually-hidden">Comments:</span><i class="fas fa-comment" aria-hidden="true"></i> 2</li>
+					</ul>
+
+				</div>
+
+			</div>
+
+			{% endfor %}
+
+
+		</div>
+		<!-- End of gallery -->
+
+		<div class="loader"></div>
+
+	</div>
+	<!-- End of container -->
+
+</main>
+
+
+
+
+<style>
+    #nb7 {background-color: #1f49c7;}
+
+    .card-horizontal {
+    display: flex;
+    flex: 1 1 auto;
+}
+</style>
+
+{% endblock %}

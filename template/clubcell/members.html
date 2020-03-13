@@ -1,0 +1,293 @@
+{% extends 'clubcell/base2.html' %}
+{% load static %}
+{% block content %}
+<link href='https://fonts.googleapis.com/css?family=Archivo Black' rel='stylesheet'>
+<center>
+<h1 style="font-family: 'Archivo Black';font-size: 100px;"><u>MEMBERS</u></h1>
+</center>
+<button class="btn btn-success" id="create-team-button" style="float: right;"><i class="fa fa-plus"></i> Create new team</button>
+<div id="createteam" style="float:right"><input id="createteaminput"  placeholder="enter team name" name="create_team_name" type="text"><button id="createteamsubmit" onclick="addTeam()">Create</button></div>
+<div id="universal">
+    {% for team in teams %}
+    <div id="{{team.pk}}main">
+    <div class="team-name-box" >
+    <div class="team-name" id="{{team.pk}}title" style="font-family: 'Archivo Black';font-size: 30px; color:white;display:inline-block;"><span class="{{team.pk}}name" contentEditable="false">{{team.team_name}}</span></div>
+        <div class="team-edit" style="display:inline-block;">
+            <!-- core team is a category of team which is not deletable -->
+            {% if team.team_name != 'CORE TEAM' %}
+    <button class="edit-team" id="{{team.pk}}edit" data-toggle="tooltip"  title="edit team" style="background-color:  #e6e6e6;border: 0;box-shadow: none;border-radius: 0px;"><i class="fas fa-edit"></i></button>{% endif %}
+    <button data-toggle="tooltip" id="{{team.pk}}add" class="add-member"  title="add members" style="background-color:  #e6e6e6;border: 0;box-shadow: none;border-radius: 0px;"><i class="fas fa-plus-circle"></i></button>
+                        {% if team.team_name != 'CORE TEAM' %}
+    <button data-toggle="tooltip" id="{{team.pk}}dlt" class="dlt-team" title="delete team" style="background-color:  #e6e6e6;border: 0;box-shadow: none;border-radius: 0px;"><i class="fas fa-trash-alt"></i></button>{% endif %}
+            <br>
+           <div id="{{team.pk}}addmember" class="addmemberinput"><input id="{{team.pk}}addmemberinput" placeholder="registration number" name="{{team.team_name}}" type="text"><button class="addmembersubmit" id="{{team.pk}}addmembersubmit" onclick="addMember('{{team.pk}}addmemberinput', '{{team.team_name}}')">Add</button></div>
+            <div id="{{team.pk}}editteam" class="editteaminput"><input id="{{team.pk}}editteaminput" placeholder="team name" value="{{team.team_name}}" name="{{team.team_name}}" type="text"><button class="editteamsubmit" id="{{team.pk}}editteamsubmit" onclick="editTeam('{{team.pk}}editteaminput', '{{team.pk}}')">Edit</button></div>
+            <div id="{{team.pk}}dltfullTeam" class="dltteaminput"><font color="red" size="1" style="line-height: 0.1;">This process is irreversible.Type team name and press delete button to delete.<br></font> <input id="{{team.pk}}dltteaminput" placeholder="type '{{team.team_name}}'"  name="{{team.team_name}}" type="text"><button class="dltteamsubmit" id="{{team.pk}}dltteamsubmit" onclick="dltTeam('{{team.pk}}dltteaminput', '{{team.pk}}')">Delete</button></div>
+        </div>
+    <br><br>
+    </div>
+
+    <div class="row" id="{{team.team_name}}teamBox" style="margin-left:60px;">
+
+        {% for member in team.members.all %}
+
+      <div class="column" id="{{team.team_name}}mainBox" style="min-width:170px;">
+        <div class="card">
+          <img src="{{ member.user.details.profile_pic.thumbnail.200x200 }}" alt="{{ member.user.username}}" style="width:100%;" height="150px">
+          <div class="container">
+            <h4>{{member.user.first_name}} {{member.user.last_name}}</h4>
+              <h6>{{member.user.details.reg_no}}</h6>
+              <p class="title"><font color="green">{{member.get_post_display}}</font></p>
+          </div>
+        </div>
+      </div>
+        {% endfor %}
+    </div><br>
+        </div>
+    {% endfor %}
+
+</div>
+
+<style>
+    #nb6 {background-color: #1f49c7;}
+
+    .card-horizontal {
+    display: flex;
+    flex: 1 1 auto;
+}
+.team-name {
+	border-bottom: 80px solid #1f49c7;
+	border-right: 50px solid transparent;
+	height: 0;
+}
+.team-edit{visibility: hidden;}
+
+.team-name-box:hover .team-edit{visibility: visible; }
+
+</style>
+<style>
+
+    /* Three columns side by side */
+.column {
+  float: left;
+  width: 15%;
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
+
+/* Display the columns below each other instead of side by side on small screens */
+@media screen and (max-width: 650px) {
+  .column {
+    width: 100%;
+    display: block;
+  }
+}
+
+/* Add some shadows to create a card effect */
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Some left and right padding inside the container */
+.container {
+  padding: 0 16px;
+}
+
+/* Clear floats */
+.container::after, .row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.title {
+  color: grey;
+}
+
+.button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+}
+
+.button:hover {
+  background-color: #555;
+}
+
+</style>
+
+<script>
+$(".addmemberinput").hide();
+$(".editteaminput").hide();
+$(".dltteaminput").hide();
+$("#createteam").hide();
+$(".add-member").click(function()
+{
+    $(".editteaminput").hide();
+    $(".dltteaminput").hide();
+    var cls = this.id;
+    $('#'+cls+'member').show();
+});
+$(".edit-team").click(function()
+{
+    $(".addmemberinput").hide();
+    $(".dltteaminput").hide();
+    var cls = this.id;
+    $('#'+cls+'team').show();
+});
+$(".dlt-team").click(function()
+{
+    $(".addmemberinput").hide();
+    $(".editteaminput").hide();
+    var cls = this.id;
+    $('#'+cls+'fullTeam').show();
+});
+$("#create-team-button").click(function()
+{
+    $(".addmemberinput").hide();
+    $(".editteaminput").hide();
+    $("#create-team-button").hide();
+    $("#createteam").show();
+});
+
+</script>
+
+<script>
+
+function getCookie(c_name)
+{
+    if (document.cookie.length > 0)
+    {
+        c_start = document.cookie.indexOf(c_name + "=");
+        if (c_start != -1)
+        {
+            c_start = c_start + c_name.length + 1;
+            c_end = document.cookie.indexOf(";", c_start);
+            if (c_end == -1) c_end = document.cookie.length;
+            return unescape(document.cookie.substring(c_start,c_end));
+        }
+    }
+    return "";
+ }
+
+
+	$(function () {
+    $.ajaxSetup({
+        headers: { "X-CSRFToken": getCookie("csrftoken") }
+    });
+});
+
+  function addMember(input_id, team_name) {
+
+  $.ajax({
+            url: "/club/ajax/addmember",
+            type: "POST",
+            data: {
+                member: document.getElementById(input_id).value ,
+                team: team_name
+            },
+            success: function(result) {
+            if(result.result == "1"){
+               document.getElementById(result.team+'teamBox').innerHTML += '<div class="column" id="'+result.team+'mainBox" style="min-width:170px;"><div class="card"><img src="'+result.dp+'" alt="Jane" style="width:100%"  height="150px"><div class="container"><h4>'+result.name+'</h4><h6>'+result.reg+'</h6><p class="title"><font color="green">Coordinator</font></p></div></div></div>';
+               alert(result.name+" is added to "+result.team+" as a coordinator" );
+            }
+            else if(result.result == "-1"){
+               alert(result.message );
+            }
+            },
+            error: function(result){
+                alert("something gone wrong, reloading page may solve the error.");}
+          });
+          }
+</script>
+
+<script>
+
+    function editTeam(input_id, team_name) {
+
+  $.ajax({
+            url: "/club/ajax/editteam",
+            type: "POST",
+            data: {
+                new_name: document.getElementById(input_id).value ,
+                team: team_name
+            },
+            success: function(result) {
+            if(result.result == "1"){
+                   document.getElementById(result.team_pk+'title').innerHTML =  '<span class="'+result.team_pk+'name" contentEditable="false">'+result.newName+'</span></div>';
+               alert(result.oldName+" is now "+result.newName);
+            }
+            else if(result.result == "-1"){
+               alert(result.message );
+            }
+            },
+            error: function(result){
+                alert("something gone wrong, reloading page may solve the error.");}
+          });
+          }
+</script>
+
+
+<script>
+
+    function dltTeam(input_id, team_name) {
+
+  $.ajax({
+            url: "/club/ajax/dltteam",
+            type: "POST",
+            data: {
+                confirm_team: document.getElementById(input_id).value ,
+                team: team_name
+            },
+            success: function(result) {
+            if(result.result == "1"){
+                $('#'+team_name+'main').hide(1200);
+
+            }
+            else if(result.result == "-1"){
+               alert(result.message );
+            }
+            },
+            error: function(result){
+                alert("something gone wrong, reloading page may solve the error.");}
+          });
+          }
+</script>
+
+
+<script>
+
+   function addTeam() {
+
+    $.ajax({
+              url: "/club/ajax/addteam",
+              type: "POST",
+              data: {
+                  team: document.getElementById("createteaminput").value
+              },
+              success: function(result) {
+              if(result.result == "1"){
+                  document.getElementById("universal").innerHTML += '     <div id="{{team.pk}}main"><div class="team-name-box" ><div class="team-name" id="'+result.pk+'title" style="font-family: '+'Archivo Black'+';font-size: 30px; color:white;display:inline-block;"><span class="'+result.pk+'name" contentEditable="false">'+result.team_name+'</span></div><div class="team-edit" style="display:inline-block;"><button class="edit-team" id="'+result.pk+'edit" data-toggle="tooltip"  title="edit team" style="background-color:  #e6e6e6;border: 0;box-shadow: none;border-radius: 0px;"><i class="fas fa-edit"></i></button><button data-toggle="tooltip" id="'+result.pk+'add" class="add-member"  title="add members" style="background-color:  #e6e6e6;border: 0;box-shadow: none;border-radius: 0px;"><i class="fas fa-plus-circle"></i></button><button data-toggle="tooltip" id="'+result.pk+'dlt" class="dlt-team" title="delete team" style="background-color:  #e6e6e6;border: 0;box-shadow: none;border-radius: 0px;"><i class="fas fa-trash-alt"></i></button><br><div id="'+result.pk+'addmember" class="addmemberinput"><input id="'+result.pk+'addmemberinput" placeholder="registration number" name="'+result.team_name+'" type="text"><button class="addmembersubmit" id="'+result.pk+'addmembersubmit" onclick=\'addMember("'+result.pk+'addmemberinput", "'+result.pk+'")\'>Add</button></div><div id="'+result.pk+'editteam" class="editteaminput"><input id="'+result.pk+'editteaminput" placeholder="team name" value="'+result.team_name+'" name="'+result.team_name+'" type="text"><button class="editteamsubmit" id="'+result.pk+'editteamsubmit" onclick=\'editTeam("'+result.pk+'editteaminput", "'+result.pk+'")\'>Edit</button></div><div id="'+result.pk+'dltfullTeam" class="dltteaminput"><font color="red" size="1" style="line-height: 0.1;">This process is irreversible.Type team name and press delete button to delete.<br></font> <input id="'+result.pk+'dltteaminput" placeholder="type '+result.team_name+'"  name="'+result.team_name+'" type="text"><button class="dltteamsubmit" id="'+result.pk+'dltteamsubmit" onclick=\'"dltTeam("'+result.pk+'dltteaminput", "'+result.pk+'")\'>Delete</button></div></div><br><br></div><div class="row" id="'+result.team_name+'teamBox" style="margin-left:60px;"></div><br></div>  ';
+                  $(".addmemberinput").hide();
+                    $(".editteaminput").hide();
+                    $(".dltteaminput").hide();
+                  alert(result.team_name+" team created.");
+
+              }
+              else if(result.result == "-1"){
+                 alert(result.message );
+              }
+              },
+              error: function(result){
+                  alert("something gone wrong, reloading page may solve the error.");}
+            });
+            }
+</script>
+
+{% endblock %}

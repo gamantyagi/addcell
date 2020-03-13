@@ -1,0 +1,240 @@
+{% extends 'clubcell/base2.html' %}
+{% load static %}
+{% block content %}
+
+
+    <div id="wrapper">
+            <div class="container-fluid">
+                				<div class="caption v-middle text-center">
+					<h1 class="cd-headline clip">
+			            <span class="blc">Event: </span>
+			            <span class="cd-words-wrapper">
+			              <b class="is-visible xx" >{{event.event_uen}}</b>
+			              <b class="x1">{{event.time_old.0}}</b>
+			            
+			            </span>
+	          		</h1>
+				</div>
+                <div class="card" style="min-height: 450px;" >
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                            <li class="nav-item"><a class="nav-link active" id="item-1-1-tab" data-toggle="tab" role="tab" aria-controls="item-1-1" aria-selected="true" href="#item-1-1">Registered Participants</a></li>
+                            <li class="nav-item"><a class="nav-link" id="item-1-2-tab" data-toggle="tab" role="tab" aria-controls="item-1-2" aria-selected="false" href="#item-1-2">Setting and updates</a></li>
+                            <li class="nav-item"><a class="nav-link" id="item-1-3-tab" data-toggle="tab" role="tab" aria-controls="item-1-3" aria-selected="false" href="#item-1-3">Posts</a></li>
+                            <li class="nav-item"><a class="nav-link" id="item-1-4-tab" data-toggle="tab" role="tab" aria-controls="item-1-4" aria-selected="false" href="#item-1-4">Analysis</a></li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+
+                        <div id="nav-tabContent" class="tab-content">
+                            <div id="item-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="item-1-1-tab">
+
+
+                            <div class="card-body" >
+                                <div class="row">
+                                    <div class="col-md-6 text-nowrap">
+                                        <div id="dataTable_length" class="dataTables_length" aria-controls="dataTable"><label>Show&nbsp;<select class="form-control form-control-sm custom-select custom-select-sm"><option value="all" selected="">All</option></select>&nbsp;</label></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="text-md-right dataTables_filter" id="dataTable_filter"><label><input type="search" class="form-control form-control-sm" id="mytablesearch" aria-controls="dataTable" placeholder="Search" autofocus></label></div>
+                                    </div>
+                                </div>
+                                <div></div>
+                                <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                                    <table class="table dataTable my-0 DataTable" id="dataTable2" onkeydown="search_focus()" style="position: sticky; top: 0;">
+                                        <thead >
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Registration No.</th>
+                                                <th>Email ID</th>
+                                                <th>Phone No.</th>
+                                                <th>Branch</th>
+                                                <th>Course</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="myTable">
+                                        {% for member in event.event_participants.all %}
+                                            {% if member.highlight == True %}
+                                            <tr id="id{{member.reg_no}}" class="highlighted"  data-toggle="tooltip" title="{{member.highlight_reason}}" >
+                                                <td hidden>highlighted</td>
+                                                {% else %}
+                                            <tr id="id{{member.reg_no}}" >
+                                                {% endif %}
+                                                {% if member.user.details.gender == "female" %}
+                                                    <td hidden>girl female lady</td>
+                                                {% else %}
+                                                    <td hidden>boy male gents</td>
+                                                {% endif %}
+                                                <td>
+<!--                                                    <object class="rounded-circle mr-2" id="ob{{member.4}}" width="30" height="30" {% if member.user.details.gender == "female" %} data="{{path}}/media/default_female.png" {% else %} data="{{path}}/media/default_male.png" {% endif %} type="image/png">-->
+
+                                                    <img class="rounded-circle mr-2" width="30" height="30" src="{{ member.user.details.profile_pic.thumbnail.30x30 }}">
+<!--                                                    </object>-->
+
+                                                    {{member.user.first_name}} {{member.user.last_name}}</td>
+                                                <td>{{member.user.details.reg_no}}</td>
+                                                <td>{{member.user.email}}</td>
+                                                <td>{{member.user.details.phone_no}}</td>
+                                                <td>{{member.user.details.branch}}</td>
+                                                <td>{{member.user.details.course}}</td>
+                                            </tr>
+
+                                        {% endfor %}
+
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td><strong>Name</strong></td>
+                                                <td><strong>Registration No.</strong></td>
+                                                <td><strong>Email ID</strong></td>
+                                                <td><strong>Phone No.</strong></td>
+                                                <td><strong>Branch</strong></td>
+                                                <td><strong>Course</strong></td>
+
+
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 align-self-center">
+                                        <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">Showing All of {{ event.event_participants.all.count }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                                            <ul class="pagination">
+                                                <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+
+                                                <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                                                           </div>
+
+                            <div id="item-1-2" class="tab-pane fade" role="tabpanel" aria-labelledby="item-1-2-tab">
+                                <h4>Second Item Title</h4>
+                                <p>Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus.</p><button class="btn btn-primary" type="button">Button</button></div>
+
+                            <div
+                                id="item-1-3" class="tab-pane fade" role="tabpanel" aria-labelledby="item-1-3-tab">
+                                <h4>Third Item Title</h4>
+                                <p>Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus.</p><button class="btn btn-primary" type="button">Button</button></div>
+
+
+                            <div
+                                id="item-1-4" class="tab-pane fade" role="tabpanel" aria-labelledby="item-1-4-tab">
+                                <h4>Fourth Item Title</h4>
+                                <p>Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus.</p><button class="btn btn-primary" type="button">Button</button></div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #F8F8F8;
+}
+tr:hover {
+          background-color: #E8E8E8;
+        }
+td:hover {
+          background-color: #D8D8D8;
+        }
+tbody tr.active {background: #DCDCDC;}
+tbody tr td.active {background: #C8C8C8;}
+
+
+
+.highlighted{{member.4}}{
+    background-color: #fff9b3;
+}
+#nb4 {background-color: #1f49c7;}
+
+
+</style>
+
+<script>
+$(document).ready(function(){
+    var aramaAlani = document.getElementById("mytablesearch");
+
+    $("#myTable  td").click(function(){
+        $(this).toggleClass("active");
+    });
+
+    $("#myTable > tr").click(function(){
+        $(this).toggleClass("active");
+    });
+
+
+
+
+  $("#mytablesearch").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#myTable tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+
+function search_focus() {
+               document.getElementById("mytablesearch").focus();
+           }
+</script>
+
+
+
+{% endblock %}
+
+<!
+<div class="card">
+                    <div class="card-body">
+                        <div class="media">
+                            <div><img class="rounded-circle mr-3" style="height: 50px; width: 50px;" src="assets/img/user-photo2.jpg"></div>
+                            <div class="media-body">
+                                <ul class="list-unstyled fa-ul">
+                                    <li><i class="fa fa-user fa-li"></i><a href="#">James Doe</a></li>
+                                    <li><i class="fa fa-envelope fa-li"></i><a href="#">james.doe@gmail.com </a></li>
+                                    <li><i class="fa fa-phone fa-li"></i>(555) 555-5555</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div><small>Affinity Score <i class="fa fa-info-circle text-info"></i></small>
+                            <div class="progress progress-high">
+                                <div class="progress-bar bg-danger" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" style="width: 90%;"><span class="sr-only">90%</span></div>
+                            </div>
+                        </div>
+                        <hr>
+                        <p><i class="fa fa-ticket fa-fw"></i> 1 General Admission Tickets: $25<br>
+<span class="text-muted"><i class="fa fa-calendar fa-fw"></i> May 12, 2016</span></p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="media">
+                            <div><img class="rounded-circle mr-3" style="height: 25px; width: 25px;" src="assets/img/avatar.jpg"></div>
+                            <div class="media-body"><a href="#"><small class="text-uppercase text-muted">Referred By:</small><br>
+Alberto Gonzalez</a></div>
+                        </div>
+                    </div>
+                </div>
+/>
