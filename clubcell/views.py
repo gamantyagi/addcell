@@ -212,7 +212,7 @@ class Student:
         if request.user.is_authenticated:
             user = request.user
             return GoTo.render_page(request, Pages.STUDENT_POSTS, {'user': user,
-                                                                     'posts': posts.objects.all()})
+                                                                   'posts': posts.objects.all()})
 
 
 class CommonMethod:
@@ -220,8 +220,11 @@ class CommonMethod:
     @staticmethod
     def view_event_detail(request, event_uen):
         user = request.user
+        event = events.objects.get(event_uen=event_uen)
         return GoTo.render_page(request, Pages.CLUB_EVENT_DETAIL, {'user': user,
-                                                                   'event': events.objects.get(event_uen=event_uen)
+                                                                   'event': event,
+                                                                   'event_query': event.event_query.filter(replied=None)
+
                                                                    })
 
 

@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views, Ajax, models
+from . import views, Ajax, models, student
 urlpatterns = [
     path('', views.Entry.homepage, name='HomePage'),
     path('login/', views.Entry.login, name='Login'),
@@ -13,7 +13,7 @@ urlpatterns = [
     path('club/mycell/', views.Club.my_cell, name='Mycell'),
     #path('update/bprofile/', views.ClubCell.update, name="Update"),
     path('club/eventtodo/<str:event_uen>', views.Club.event_todo_main, name="eventToDo"),
-    path('club/eventtodo', views.Club.events_todo, name="eventToDo"),
+    path('club/eventtodo/', views.Club.events_todo, name="eventToDo"),
     path('club/eventdone/', views.Club.event_done, name="eventToDo"),
     path('club/members', views.Club.members, name="eventToDo"),
     path('club/posts', views.Club.posts, name="eventToDo"),
@@ -28,12 +28,20 @@ urlpatterns = [
     path('club/ajax/editteam', Ajax.Club.edit_team, name="add member to club"),
     path('club/ajax/dltteam', Ajax.Club.delete_team, name="add member to club"),
     path('club/ajax/addteam', Ajax.Club.add_team, name="add member to club"),
+    path('club/ajax/load/queries', Ajax.ClubLoadHtml.queries_and_alerts, name="load queries"),
+    path('club/ajax/load/messages', Ajax.ClubLoadHtml.messages_and_queries, name="load messages"),
     path('student/ajax/ajax_event_register/', Ajax.Ajax.event_register, name="eventToDo"),
 
     path('student/home/', views.Student.home, name='Events'),
     path('student/profile/', views.Student.profile, name='profile'),
     path('student/explore/', views.Student.home, name='explore'),
     path('student/posts/', views.Student.posts, name='explore'),
+
+    path('event/askquery', student.Student.ask_event_query, name="ask event query"),
+    path('event/dltquery', student.Student.dlt_event_query, name="dlt event query"),
+
+    path('event/askqueryc', Ajax.Club.ask_event_query, name="ask event query club"),
+    path('event/dltqueryc', Ajax.Club.dlt_event_query, name="dlt event query club"),
 
     path('event/<str:event_uen>/', views.CommonMethod.view_event_detail, name='event display'),
     path('messages/chat/<str:chat_to>/', views.Message.chat, name='check'),

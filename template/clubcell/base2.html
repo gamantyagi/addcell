@@ -213,41 +213,41 @@
             <script src='{% static "assets/js/Review-rating-Star-Review-Button.js" %}'></script>
 
     </div>
-<div class="dropdown-menu dropdown-menu-sm" id="context-menu">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
+<!--<div class="dropdown-menu dropdown-menu-sm" id="context-menu">-->
+<!--          <a class="dropdown-item" href="#">Action</a>-->
+<!--          <a class="dropdown-item" href="#">Another action</a>-->
+<!--          <a class="dropdown-item" href="#">Something else here</a>-->
+<!--        </div>-->
 </body>
 
 
 
+<!--<script>-->
+<!--    $("body").on("contextmenu",function(e){-->
+<!--     return false;-->
+<!--});-->
+
+<!--</script>-->
+
+
+<!--    $('body').on('contextmenu', function(e) {-->
+<!--  var top = e.pageY - 10;-->
+<!--  var left = e.pageX - 90;-->
+<!--  $("#context-menu").css({-->
+<!--    display: "block",-->
+<!--    top: top,-->
+<!--    left: left-->
+<!--  }).addClass("show");-->
+<!--  return false; //blocks default Webbrowser right click menu-->
+<!--}).on("click", function() {-->
+<!--  $("#context-menu").removeClass("show").hide();-->
+<!--});-->
+
+<!--$("#context-menu a").on("click", function() {-->
+<!--  $(this).parent().removeClass("show").hide();-->
+<!--});-->
+
 <script>
-    $("body").on("contextmenu",function(e){
-     return false;
-});
-
-</script>
-
-<script>
-    $('body').on('contextmenu', function(e) {
-  var top = e.pageY - 10;
-  var left = e.pageX - 90;
-  $("#context-menu").css({
-    display: "block",
-    top: top,
-    left: left
-  }).addClass("show");
-  return false; //blocks default Webbrowser right click menu
-}).on("click", function() {
-  $("#context-menu").removeClass("show").hide();
-});
-
-$("#context-menu a").on("click", function() {
-  $(this).parent().removeClass("show").hide();
-});
-
-
 
 function myFunction() {
   var x = document.getElementById("logs");

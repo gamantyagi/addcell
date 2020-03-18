@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.contrib.auth.models import User
-from clubcell.models import events, event_participants, details, team, members
+from clubcell.models import events, event_participants, details, team, members, event_query
 from django.http import HttpResponse
 import sys
 import csv
@@ -106,18 +107,26 @@ class Club:
                     return HttpResponse(json.dumps({'result': '-1',
                                                     'message': 'Error, registration number {} is associated with multiple account'.format(
                                                         member_reg_no)}), content_type="application/json")
-                return HttpResponse(json.dumps({'result': '-1', 'message': 'No account found by registration number {}'.format(member_reg_no)}),content_type="application/json")
+                return HttpResponse(json.dumps(
+                    {'result': '-1', 'message': 'No account found by registration number {}'.format(member_reg_no)}),
+                    content_type="application/json")
             team_name = request.POST['team']
             teams = user.clubcell.team.get(team_name=team_name)
             already_member = member.user.members.filter(team=teams)
             if teams.team_name == team_name and already_member.all().count() == 0:
                 new_member = members(user=member.user, club=user.clubcell, team=teams, post="CN")
                 new_member.save()
-                return HttpResponse(json.dumps({'result': '1', 'name': member.user.first_name+' '+member.user.last_name, 'reg': member.reg_no, 'team': teams.team_name, 'dp': member.profile_pic.url}), content_type="application/json")
+                return HttpResponse(json.dumps(
+                    {'result': '1', 'name': member.user.first_name + ' ' + member.user.last_name, 'reg': member.reg_no,
+                     'team': teams.team_name, 'dp': member.profile_pic.url}), content_type="application/json")
             elif already_member.all().count() > 0:
 
-                return HttpResponse(json.dumps({'result': '-1', 'message': 'member {} {} already in team'.format(member.user.first_name, member.user.last_name)}),content_type="application/json")
-            return HttpResponse(json.dumps({'result': '-1', 'message': 'team is not available or something other'}), content_type="application/json")
+                return HttpResponse(json.dumps({'result': '-1',
+                                                'message': 'member {} {} already in team'.format(member.user.first_name,
+                                                                                                 member.user.last_name)}),
+                                    content_type="application/json")
+            return HttpResponse(json.dumps({'result': '-1', 'message': 'team is not available or something other'}),
+                                content_type="application/json")
 
     @staticmethod
     def edit_team(request):
@@ -128,7 +137,8 @@ class Club:
             try:
                 teams = user.clubcell.team.get(pk=team_name)
             except:
-                return HttpResponse(json.dumps({'result': '-1', 'message': "can't change team name twice at a time, please refresh the page first"}),
+                return HttpResponse(json.dumps({'result': '-1',
+                                                'message': "can't change team name twice at a time, please refresh the page first"}),
                                     content_type="application/json")
             team_name = teams.team_name
             try:
@@ -138,7 +148,9 @@ class Club:
                 return HttpResponse(json.dumps({'result': '-1', 'message': "Error in given name, may be too long."}),
                                     content_type="application/json")
             if user.clubcell.team.get(team_name=new_team_name):
-                return HttpResponse(json.dumps({'result': '1', 'oldName': team_name, 'newName': new_team_name, 'team_pk': teams.pk}), content_type="application/json")
+                return HttpResponse(
+                    json.dumps({'result': '1', 'oldName': team_name, 'newName': new_team_name, 'team_pk': teams.pk}),
+                    content_type="application/json")
             return HttpResponse(json.dumps({'result': '-1', 'message': 'team name failed to initialize'}),
                                 content_type="application/json")
 
@@ -162,7 +174,8 @@ class Club:
                                     content_type="application/json")
             else:
                 return HttpResponse(json.dumps({'result': '-1',
-                                                'message': "team didn't delete, {} and {} are different names".format(confirm_team, teams.team_name)}),
+                                                'message': "team didn't delete, {} and {} are different names".format(
+                                                    confirm_team, teams.team_name)}),
                                     content_type="application/json")
 
     @staticmethod
@@ -188,3 +201,76 @@ class Club:
                                             'message': "Unable to create new team '{}'.".format(team_name)}),
                                 content_type="application/json")
 
+    @staticmethod
+    def ask_event_query(request):
+        if request.user.is_authenticated and request.method == "POST" and request.is_ajax():
+            user = request.user
+            query = request.POST['query']
+            event_uen = request.POST['uen']
+            rinfo = request.POST['replying_info']
+            event = events.objects.get(event_uen=event_uen)
+            replied_model = None
+            replied_user_model = None
+            if rinfo != "0-0":
+                replied = int(rinfo.split('-')[0])
+                replied_user = int(rinfo.split('-')[1])
+                replied_model = event_query.objects.get(pk=replied, event=event)
+                replied_user_model = User.objects.get(pk=replied_user)
+                ask = event_query(user=user, query=query, event=event, replied=replied_model,
+                                  replied_user=replied_user_model)
+                ask.save()
+                html = render_to_string('ajax/reply_query.html', {'user': user,
+                                                                  'event': event,
+                                                                  'reply': ask,
+                                                                  'query': replied_model
+                                                                  },
+                                        request=request)
+            else:
+                ask = event_query(user=user, query=query, event=event, replied=replied_model,
+                                  replied_user=replied_user_model)
+                ask.save()
+                html = render_to_string('ajax/ask_query.html', {'user': user,
+                                                                'event': event,
+                                                                'query': ask
+                                                                },
+                                        request=request)
+
+            return HttpResponse(html)
+
+    @staticmethod
+    def dlt_event_query(request):
+        if request.user.is_authenticated and request.method == "POST" and request.is_ajax():
+            user = request.user
+            query = int(request.POST['qdata'])
+            event_uen = request.POST['uen']
+            event = events.objects.get(event_uen=event_uen)
+            if event.club.user == user:
+                target_query = event_query.objects.get(pk=query, event=event)
+                target_query.delete()
+            return HttpResponse({})
+
+
+class ClubLoadHtml:
+
+    @staticmethod
+    def queries_and_alerts(request):
+        if request.user.is_authenticated and request.is_ajax() and request.method == "POST":
+            user = request.user
+            event_uen = request.POST['uen']
+            event = events.objects.get(event_uen=event_uen)
+            html = render_to_string('ajax/queries_and_alerts.html', {'user': user,
+                                                                     'event': event,
+                                                                     'event_query': event.event_query.filter(
+                                                                         replied=None)
+                                                                     },
+                                    request=request)
+            return HttpResponse(html)
+
+    @staticmethod
+    def messages_and_queries(request):
+        if request.user.is_authenticated and request.is_ajax() and request.method == "POST":
+
+            html = render_to_string('ajax/club_event_messages.html', {'user': user,
+                                                                     },
+                                    request=request)
+            return HttpResponse(html)

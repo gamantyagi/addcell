@@ -1,0 +1,105 @@
+
+<script>
+    function replyto(qpk, qdata, replying_to){
+    document.getElementById("askquery").placeholder = "replying to " + replying_to + "...";
+    document.getElementById("askquery").value = "";
+    document.getElementById("replying_info").value = qdata;
+    document.getElementById("replying_info").placeholder = qpk;
+    document.getElementById("submitquery").innerHTML = "Reply";
+  }
+  function reset_data(){
+    document.getElementById("askquery").placeholder = "Solve people queries...";
+    document.getElementById("askquery").value = "";
+    document.getElementById("replying_info").value = "0-0";
+        document.getElementById("replying_info").placeholder = '';
+    document.getElementById("submitquery").innerHTML = "Send";
+            }
+
+  function ask_queries(){
+        var rep_info = document.getElementById('replying_info').value;
+        var qpk = document.getElementById("replying_info").placeholder;
+        $.ajax({
+            type: "POST",
+            url: "{% url 'ask event query club' %}",
+            data: {'uen': '{{event.event_uen}}',
+                    'query': document.getElementById('askquery').value,
+                    'replying_info':  rep_info,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'},
+            success : function(data) {
+                if(rep_info == "0-0"){
+                 $('#queryBound').append(data);}
+                else{
+                $('#reply'+qpk).append(data);
+                }
+             }
+                });
+                reset_data();
+                            }
+
+  function dlt_query(uen, qdata){
+        $.ajax({
+            type: "POST",
+            url: "{% url 'dlt event query club' %}",
+            data: {'uen': uen,
+                    'qdata': qdata,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'},
+            success : function(data) {
+
+                 $('#queryNo'+qdata).remove(data);
+             }
+                });
+                            }
+
+</script>
+
+
+
+
+                <div id="queryBound" style=" overflow:auto;max-height:600px;">
+                    {% for query in event_query %}
+                    <div id="queryNo{{query.pk}}" >
+                    <div style="margin-top:2rem;">
+                        <span><img class="rounded-circle mr-2" src="{{ query.user.details.profile_pic.thumbnail.30x30 }}" width="30px" height="30px" style="display:inline-block;"><b>{{query.user.username}}</b></span><br>
+                        <div style="margin-left:1rem;">
+                            {{query.query}}
+
+                            <span style="float:right;"><a onclick="replyto('{{query.pk}}','{{query.pk}}-{{query.user.pk}}', '{{query.user}}')" href="#askquery"><u>Reply</u></a></span>
+
+                                 <span style="float:right; display:inline-block;margin-right:1rem;"><a onclick="dlt_query('{{event.event_uen}}','{{query.pk}}')"><font color="Red"><u>Delete</u></font></a></span>
+
+
+                        </div>
+                    </div>
+                        <div id="reply{{query.pk}}">
+                        {% for reply in query.event_query.all %}
+                            <div id="queryNo{{reply.pk}}" style="margin-left:5rem; margin-top:1rem;">
+                                <span><img class="rounded-circle mr-2" src="{{ reply.user.details.profile_pic.thumbnail.30x30 }}" width="30px" height="30px" style="display:inline-block;"><b>{{reply.user.username}}</b></span><br>
+                                <div style="margin-left:1rem;">
+
+                                    {% if reply.replied_user != reply.user %}<font color="skyblue"><b>@{{reply.replied_user.username}}</b></font>{% endif %} {{ reply.query }}
+
+                                    <span style="float:right;"><a onclick="replyto('{{query.pk}}','{{query.pk}}-{{reply.user.pk}}', '{{reply.user}}')" href="#askquery"><u>Reply</u></a></span>
+
+                                    <span style="float:right; display:inline-block; margin-right:1rem;"><a onclick="dlt_query('{{event.event_uen}}','{{reply.pk}}')" ><font color="Red"><u>Delete</u></font></a></span>
+
+                                </div>
+                                </div>
+
+                        {% endfor %}
+                            </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+
+
+            <hr>
+
+            <input type="text" name="replying_info" value="0-0" id="replying_info" hidden>
+            <textarea id="askquery" placeholder="Solve people queries..." name="query" style="width:100%;"></textarea>
+            <button type="button" id="submitquery" onclick="ask_queries()" style="float:right;">Send</button>
+                            <button type="button" onclick="reset_data()" style="float:right;" >Reset</button>
+
+
+
+

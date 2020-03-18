@@ -215,7 +215,7 @@ class events(models.Model):
         (PUBLIC, 'Public')
     ]
     club = models.ForeignKey(clubcell, on_delete=models.CASCADE, related_name='events')
-    parent_event = models.ForeignKey(group_event, on_delete=models.CASCADE, blank=True, default=1)
+    parent_event = models.ForeignKey(group_event, on_delete=models.CASCADE, blank=True)
     PAN = models.CharField(max_length=100)
     event_id = models.CharField(max_length=100, unique=True, default=pan_generate)
     event_uen = models.CharField(max_length=30, unique=True)
@@ -289,6 +289,20 @@ class review(models.Model):
     visible = models.BooleanField(default=False)
     vulgar = models.BooleanField(default=False)
     time = models.DateTimeField(default=django.utils.timezone.now)
+
+
+class event_query(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="event_query")
+    event = models.ForeignKey(events, on_delete=models.CASCADE, related_name="event_query")
+    query = models.CharField(max_length=350)
+    replied = models.ForeignKey('self', on_delete=models.CASCADE, related_name="event_query", blank=True, null=True, default=None)  # replied to which query
+    replied_user = models.ForeignKey(User, on_delete=models.CASCADE,related_name="event_replied_query", blank=True, null=True, default=None)
+    visible = models.BooleanField(default=False)
+    time = models.DateTimeField(default=django.utils.timezone.now)
+
+    def __str__(self):
+        return self.query
+
 
 
 class posts(models.Model):
@@ -406,12 +420,12 @@ class Club:
                 dl_about = request.POST['dl_about']
             except:
                 duty_leave = 'False'
-
+            parent = group_event.objects.get(group_name="MAIN", club=user.clubcell)
             event_id = General.generate('event@')
             event = events(club=user.clubcell, PAN=user.details.PAN, event_id=event_id, eventname=eventname,
                            eventtype=eventtype,
                            season=season, heldon=heldon, breif_about=breif_about, tags=tags,
                            paid=paid, fee=fee, certificate=certificate, dl=duty_leave, event_uen=event_UAP,
-                           event_detail=detail_about)
+                           event_detail=detail_about, parent_event=parent)
             event.save()
         return redirect(Paths.EVENT_TODO_MAIN)

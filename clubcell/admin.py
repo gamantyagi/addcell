@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from .models import details, clubcell, events, messages, alerts, members, review, posts, like, comments, \
     event_participants
-from .models import following, interest, team, group_event
+from .models import following, interest, team, group_event, event_query
 
 
 class detailsInline(admin.StackedInline):
@@ -74,6 +74,12 @@ class postsInline(admin.StackedInline):
     verbose_name_plural = 'posts'
 
 
+class event_queryInline(admin.StackedInline):
+    model = event_query
+    can_delete = True
+    verbose_name_plural = 'posts'
+
+
 # Define a new User admin
 class UserAdmin(BaseUserAdmin):
     inlines = (detailsInline, membersInline, followingInline, interestInline,)
@@ -92,7 +98,7 @@ class clubAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'club',)
     ordering = ('event_uen',)
     search_fields = ('event_uen', 'club',)
-    inlines = (eventparticipantInline,postsInline)
+    inlines = (eventparticipantInline, postsInline)
 
 
 """@admin.register(events)
@@ -103,8 +109,6 @@ class clubAdmin(admin.ModelAdmin):
     inlines = (membersInline, eventsInline,)
 """
 
-
-
 # Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
@@ -112,3 +116,4 @@ admin.site.register(User, UserAdmin)
 # admin.site.register(clubcell)
 # admin.site.register(events)
 admin.site.register(posts)
+admin.site.register(event_query)
