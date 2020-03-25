@@ -136,7 +136,7 @@
                                         {% for message in messages.messages %}
                                             {% if message.user == user %}
                                         <a class="d-flex align-items-center dropdown-item" onclick="window.open('{{path}}/messages/chat/{{message.second_user}}','popUpWindow','height=600,width=500,left=10,top=10,,,menubar=no'); return false;">
-                                            <div class="dropdown-list-image mr-3"><img class="rounded-circle" src="{{ message.second_user.details.profile_pic.url }}">
+                                            <div class="dropdown-list-image mr-3"><img class="rounded-circle" src="{{ message.second_user.details.profile_pic.thumbnail.30x30 }}">
 
 
                                             </div>

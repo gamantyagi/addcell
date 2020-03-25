@@ -30,8 +30,8 @@
     <div class="row" id="{{team.team_name}}teamBox" style="margin-left:60px;">
 
         {% for member in team.members.all %}
-
-      <div class="column" id="{{team.team_name}}mainBox" style="min-width:170px;">
+        <div class="col-sm-4 col-md-2 col-lg-2">
+      <div class="column" id="{{team.team_name}}mainBox" style="width:100%;">
         <div class="card">
           <img src="{{ member.user.details.profile_pic.thumbnail.200x200 }}" alt="{{ member.user.username}}" style="width:100%;" height="150px">
           <div class="container">
@@ -41,6 +41,7 @@
           </div>
         </div>
       </div>
+        </div>
         {% endfor %}
     </div><br>
         </div>

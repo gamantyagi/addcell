@@ -2,7 +2,7 @@ import operator
 
 from django.utils import timezone
 
-from clubcell.models import clubcell, events, details, User, events, messages, typing_message
+from clubcell.models import clubcell, events, details, User, events, messages, typing_message, event_participants
 from .Constants import Paths
 import os
 import csv
@@ -79,22 +79,41 @@ class GetData:
         return events.objects.filter(PAN=user.details.PAN)
 
     @staticmethod
-    def distinct_messages(request):
+    def distinct_messages(request, event_to=None):
         if request.user.is_authenticated:
             user = request.user
-            second_users = (messages.objects.filter(user=user).values('second_user').union(messages.objects.filter(second_user=user).values('user')))
-            msg_query = set()
-            unseen_msg = 0
-            for second_user in second_users:
-                chat = (messages.objects.filter(user=second_user['second_user'], second_user=user).union(
-                    messages.objects.filter(user=user, second_user=second_user['second_user']))).order_by('date_and_time').reverse()[0]
-                if not chat.seen and chat.user != user:
-                    unseen_msg += 1
-                msg_query.add(chat)
-            if unseen_msg == 0:
-                unseen_msg = ''
-            msg_query = reversed(sorted(msg_query, key=operator.attrgetter('date_and_time')))
-            return {'messages': msg_query, 'unseen_count': unseen_msg}
+            if event_to == "all":
+                second_users = (messages.objects.filter(user=user).values('second_user').union(
+                    messages.objects.filter(second_user=user).values('user')))
+                msg_query = set()
+                unseen_msg = 0
+                for second_user in second_users:
+                    chat = \
+                    (messages.objects.filter(user=second_user['second_user'], second_user=user).union(
+                        messages.objects.filter(user=user, second_user=second_user['second_user']))).order_by('date_and_time').reverse()[0]
+                    if not chat.seen and chat.user != user:
+                        unseen_msg += 1
+                    msg_query.add(chat)
+                if unseen_msg == 0:
+                    unseen_msg = ''
+                msg_query_n = reversed(sorted(msg_query, key=operator.attrgetter('date_and_time')))
+                return {'messages': msg_query_n, 'unseen_count': unseen_msg,
+                        'first': sorted(msg_query, key=operator.attrgetter('date_and_time'))[-1]}
+
+            else:
+                second_users = (messages.objects.filter(user=user, event=event_to).values('second_user').union(messages.objects.filter(second_user=user, event=event_to).values('user')))
+                msg_query = set()
+                unseen_msg = 0
+                for second_user in second_users:
+                    chat = (messages.objects.filter(user=second_user['second_user'], second_user=user, event=event_to).union(
+                        messages.objects.filter(user=user, second_user=second_user['second_user'], event=event_to))).order_by('date_and_time').reverse()[0]
+                    if not chat.seen and chat.user != user:
+                        unseen_msg += 1
+                    msg_query.add(chat)
+                if unseen_msg == 0:
+                    unseen_msg = ''
+                msg_query_n = reversed(sorted(msg_query, key=operator.attrgetter('date_and_time')))
+                return {'messages': msg_query_n, 'unseen_count': unseen_msg, 'first': sorted(msg_query, key=operator.attrgetter('date_and_time'))[-1]}
 
     @staticmethod
     def typing_message(txt_len, user, user_to):
@@ -121,6 +140,14 @@ class GetData:
             typing_model.typing = False
             typing_model.save()
         return user_typing
+
+    @staticmethod
+    def registered_event(user):
+        participants = event_participants.objects.filter(user=user)
+        events_registered = set()
+        for participant in participants:
+            events_registered.add(participant.events)
+        return events_registered
 
 class InCSV:
 
@@ -152,7 +179,7 @@ class InCSV:
     def write_pickle(path, name, data):
         with open(os.path.join(path, name), 'wb') as pickle_file:
             pickle.dump(data, pickle_file)
-            
+
 
 class Rendering:
     """ It gives the data required for rendering the Html page

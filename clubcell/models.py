@@ -55,6 +55,7 @@ class messages(models.Model):
         (VIDEO, 'Video')
     ]
     user = models.ForeignKey(User, related_name='messages', on_delete=models.CASCADE)
+    event = models.ForeignKey('events', on_delete=models.CASCADE, default=None, blank=True, null=True)
     second_user = models.ForeignKey(User, related_name='second_user', on_delete=models.CASCADE, default=None)
     date_and_time = models.DateTimeField(default=django.utils.timezone.now)
     message_type = models.CharField(max_length=1, choices=MESSAGE_TYPE, default=TEXT)
@@ -273,11 +274,17 @@ class event_participants(models.Model):
     highlight_reason = models.CharField(max_length=120, default='null')
     time = models.DateTimeField(default=django.utils.timezone.now)
 
+    def __str__(self):
+        return self.user.username + "------" + self.events.eventname
+
 
 class event_wishlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='event_wishlist')
     events = models.ForeignKey(events, on_delete=models.CASCADE, related_name='event_wishlist')
     time = models.DateTimeField(default=django.utils.timezone.now)
+
+    def __str__(self):
+        return self.user.username + "------" + self.events.eventname
 
 
 class review(models.Model):
@@ -295,14 +302,15 @@ class event_query(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="event_query")
     event = models.ForeignKey(events, on_delete=models.CASCADE, related_name="event_query")
     query = models.CharField(max_length=350)
-    replied = models.ForeignKey('self', on_delete=models.CASCADE, related_name="event_query", blank=True, null=True, default=None)  # replied to which query
-    replied_user = models.ForeignKey(User, on_delete=models.CASCADE,related_name="event_replied_query", blank=True, null=True, default=None)
+    replied = models.ForeignKey('self', on_delete=models.CASCADE, related_name="event_query", blank=True, null=True,
+                                default=None)  # replied to which query
+    replied_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="event_replied_query", blank=True,
+                                     null=True, default=None)
     visible = models.BooleanField(default=False)
     time = models.DateTimeField(default=django.utils.timezone.now)
 
     def __str__(self):
         return self.query
-
 
 
 class posts(models.Model):

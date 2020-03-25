@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from .models import details, clubcell, events, messages, alerts, members, review, posts, like, comments, \
-    event_participants
+    event_participants, event_wishlist
 from .models import following, interest, team, group_event, event_query
 
 
@@ -117,3 +117,5 @@ admin.site.register(User, UserAdmin)
 # admin.site.register(events)
 admin.site.register(posts)
 admin.site.register(event_query)
+admin.site.register(event_participants)
+admin.site.register(event_wishlist)

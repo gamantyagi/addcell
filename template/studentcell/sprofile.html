@@ -3,44 +3,66 @@
 {% block content %}
 <style>
 .notify-badge{
-    position: absolute;
-    top:10px;
-    background:green;
-    text-align: center;
-    border-radius: 30px 30px 30px 30px;
-    color:white;
-    padding:5px 10px;
-    font-size:20px;
+    position: absolute !important;
+    top:5px !important;
+    left: 20px; !important;
+    background:green !important;
+    text-align: center !important;
+    border-radius: 30px 30px 30px 30px !important;
+    color:white !important;
+    padding:5px 10px !important;
+    font-size:20px !important;
 }
 </style>
+
+<script>
+	function load_events(to_load){
+        $('#event_box_cont').html("<div style='height:700px;'><centre>Loading, please wait...</centre></div>");
+        $.ajax({
+            type: "POST",
+            url: "{% url 'user profile load' %}",
+            data: {
+            'to_load': to_load,
+             'csrfmiddlewaretoken': '{{ csrf_token }}'},
+            success : function(html) {
+                 $('#event_box_cont').html(html);
+             }
+                });
+                            }
+</script>
 
 <div class="features-boxed">
         <div class="container">
             <center>
             <div class="intro" style="max-width: 892px;">
                 <h1 class="text-center">Welcome {{user.first_name}} {{user.last_name}}</h1>
-                <div class="text-center">You can view instructions <a href="#">here</a></div>
-            </div></center>
-            <div class="filtr-controls"><span  data-filter="all" class="active" onclick="window.location.href='{{path}}/student/profile'">Your Profile</span><span data-filter="1" onclick="window.location.href='{{path}}/student/explore'">Explore</span><span data-filter="2">Recommended</span><span data-filter="3" onclick="window.location.href='{{path}}/student/posts'">Posts</span><span data-filter="3">Trending</span><span data-filter="3">Top list</span></div>
 
-                <div class="row features">
+            </div></center>
+            <div class="filtr-controls"><span  data-filter="all" class="active" onclick="window.location.href='{{path}}/student/profile'">Your Profile</span>
+                <span data-filter="1" onclick="window.location.href='{{path}}/student/explore'">Explore</span>
+<!--                <span data-filter="2">Recommended</span>-->
+                <span data-filter="3" onclick="window.location.href='{{path}}/student/posts'">Posts</span>
+<!--                <span data-filter="3">Trending</span><span data-filter="3">Top list</span></div>-->
+                <hr width="100%">
+                        <div><button onclick="load_events('registered')" style="width:49.9%;">Registered events</button><button onclick="load_events('wishlist')" style="width:49.9%;float:right;">Wishlist events</button></div>
+
+                <div class="row features" id="event_box_cont" style="margin-top:1rem;">
                 {% for event in events_participants %}
 
-                <div>
-                <form >
+                <div class="col-sm-12 col-md-6 col-lg-4">
+                <form class="col-sm-12 col-md-12 col-lg-12" >
 
-                <div class="col-sm-6 col-md-4 item" id="dibba"   style="max-width: 341px;margin-bottom: 2em; margin-left: 1em; ">
+                <div  id="dibba"   style="margin-bottom: 2em; margin-left: 1em; ">
 
-                    <div class="box" id="box"   style="max-width: 302px;background-color: #f2f2f2;opacity: 1; border: 1px solid #e0ebeb;">
+                    <div class="box" id="box"   style="background-color: #f2f2f2;opacity: 1; border: 1px solid #e0ebeb;">
                         <div class="image-box"  ><img class="box-image img-responsive" src='{% static ""%}event.jpg'>{% if event.events.paid == False %}<span class="notify-badge">free</span>{% endif %}</div>
-                        <div class="text-left info-box"   style="width: 300px;">
+                        <div class="text-left info-box"   >
                             <div onclick="window.location.href='{{path}}/event/{{event.events.event_uen}}'" style="cursor:pointer;">
                             <h3 class="text-center name" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{event.events.eventname}}</h3>
                             <p class="description" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{event.events.breif_about}}</p>
                             <p class="description">Date: {{event.events.heldon}}<br>fee: {{event.events.fee}}<br>Type: {{event.events.eventtype}}<br>Duty leave: {{event.events.dl}}</p>
                             </div >
-                                {% if event.events.event_id in users_registered_events %}<button type="button"   class="btn-outline-success" style="width:50%;background-color: #e6e600;border:#000000;color:#b32d00;" disabled>In toDo list</button><button type="button"  class="btn-outline-success"  style="width:50%;background-color: #e6e600;border: #b3b300;color:#b32d00;" disabled>Registered</button>{% else %}<button type="button" id="wl{{event.events.eventUAP}}"   class="btn-outline-success" style="width:50%;">Add Wishlist</button><button type="button"  class="btn-outline-success" value="{{event.events.event_id}}" id="rg{{event.events.event_UAP}}" style="width:50%;">Register</button>{% endif %}
-                        </div>
+                                 </div>
                     </div>
                 </div>
                 </form></div>
@@ -49,7 +71,7 @@
 
                 </div>
         </div>
-    </div>
+</div>
 
 
 {% endblock %}

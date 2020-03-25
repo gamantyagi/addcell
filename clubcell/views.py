@@ -1,8 +1,11 @@
 import json
 
+from django.utils import timezone
 from django.http import HttpResponse
+from django.template.loader import render_to_string
 
-from clubcell.models import events, clubcell, events, messages, typing_message, event_participants, posts
+from clubcell.models import events, clubcell, events, messages, typing_message, event_participants, posts, \
+    event_wishlist
 from .General import General, GoTo
 from django.contrib.auth.models import User
 from .Constants import Paths, Pages, Alerts
@@ -71,7 +74,7 @@ class Club:
                                                                'events_todo': user.clubcell.events.filter(
                                                                    event_complete='P'),
                                                                'messages': GetData.distinct_messages(
-                                                                   request)})
+                                                                   request, 'all')})
         return GoTo.landing_page()
 
     @staticmethod
@@ -192,12 +195,13 @@ class Club:
 class Student:
 
     @staticmethod
-    def home(request):
+    def home(request):  # explore option
         if request.user.is_authenticated:
             user = request.user
             return GoTo.render_page(request, Pages.STUDENT_HOME, {'user': user,
                                                                   'events_todo': events.objects.filter(
-                                                                      event_complete='P')})
+                                                                      event_complete='P'),
+                                                                  'event_registered': GetData.registered_event(user)})
 
     @staticmethod
     def profile(request):
@@ -223,8 +227,8 @@ class CommonMethod:
         event = events.objects.get(event_uen=event_uen)
         return GoTo.render_page(request, Pages.CLUB_EVENT_DETAIL, {'user': user,
                                                                    'event': event,
+                                                                   'event_registered': GetData.registered_event(user),
                                                                    'event_query': event.event_query.filter(replied=None)
-
                                                                    })
 
 
@@ -235,17 +239,23 @@ class Message:
         if request.user.is_authenticated:
             user = request.user
             chat_to_user = User.objects.get(username=chat_to)
-            if request.method == "POST":
-                message_sent = request.POST['message']
-                new_msg = messages(user=user, second_user=chat_to_user, message_in=message_sent)
-                new_msg.save()
-                return GoTo.redirect_to('/messages/chat/{}/'.format(chat_to))
+            try:
+                event_to = request.GET['e']
+                event_to_model = events.objects.get(event_uen=event_to)
+            except:
+                event_to = ''
+
+            chats_count = (messages.objects.filter(user=chat_to_user, second_user=user).union(
+                messages.objects.filter(user=user, second_user=chat_to_user))).order_by('date_and_time').count()
 
             chats = (messages.objects.filter(user=chat_to_user, second_user=user).union(
-                messages.objects.filter(user=user, second_user=chat_to_user))).order_by('date_and_time')
+                messages.objects.filter(user=user, second_user=chat_to_user))).order_by('date_and_time')[::-1][0:100][
+                    ::-1]
             return GoTo.render_page(request, Pages.CHAT_PANEL, {'chat_to': chat_to_user,
                                                                 'user': user,
-                                                                'chats': chats
+                                                                'chats': chats,
+                                                                'chats_count': chats_count,
+                                                                'event_to': event_to
                                                                 })
 
     @staticmethod
@@ -253,6 +263,7 @@ class Message:
         if request.user.is_authenticated and request.is_ajax():
             user = request.user
             gpk = request.POST['element']
+
             txt_len = int(request.POST['text'])
             chat_to_user = User.objects.get(username=chat_to)
             # now we will get if second user is typing or not and set if we are also typing
@@ -264,12 +275,45 @@ class Message:
                 last.seen = True
                 last.save()
             if last.pk == int(gpk):
-                return HttpResponse(json.dumps("%dt" % (second_typing)), content_type="application/json")
+                return HttpResponse(json.dumps("%dt" % second_typing), content_type="application/json")
             elif last.pk != int(gpk) and int(gpk) < last.pk and last.user != user:
-                dict_data = {'result': 1, 'msg': last.message_in, 'user': last.user.username,
-                             'time': str(last.get_time()[0]), 'date': str(last.get_time()[1]), 'id': last.pk}
+                html = render_to_string('common/new_msg_box.html', {'user': user,
+                                                                    'chat_to': chat_to_user,
+                                                                    'message': last
+                                                                    },
+                                        request=request)
+                dict_data = {'result': 1, 'html': html, 'id': last.pk}
                 return HttpResponse(json.dumps(dict_data), content_type="application/json")
             else:
+                # return HttpResponse(json.dumps("-1"), content_type="application/json")
                 return HttpResponse(json.dumps("-1"), content_type="application/json")
         else:
             return HttpResponse(json.dumps("unknown"), content_type="application/json")
+
+    @staticmethod
+    def post_new_message(request):
+        if request.user.is_authenticated and request.method == "POST" and request.is_ajax():
+            user = request.user
+            chat_to = request.POST['second_user']
+            chat_to_user = User.objects.get(username=chat_to)
+            message_sent = request.POST['message']
+            message_sent = message_sent.lstrip()
+            if message_sent != '':
+                e = request.POST['event_to']
+                try:
+                    event = events.objects.get(event_uen=e)
+                except:
+                    event = None
+                now = timezone.now()
+                new_msg = messages(user=user, second_user=chat_to_user, message_in=message_sent, date_and_time=now, event=event)
+                new_msg.save()
+                new_msg = messages.objects.get(user=user, second_user=chat_to_user, message_in=message_sent,
+                                               date_and_time=now)
+
+                html = render_to_string('common/new_msg_box.html', {'user': user,
+                                                                    'chat_to': chat_to_user,
+                                                                    'message': new_msg
+                                                                    },
+                                        request=request)
+                return HttpResponse(html)
+            return HttpResponse('')

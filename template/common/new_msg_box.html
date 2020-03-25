@@ -1,0 +1,28 @@
+
+							{% if message.user == chat_to %}
+							<div class="d-flex justify-content-start mb-4"  id="{{message.pk}}">
+								<div class="img_cont_msg" >
+									<img src="{{ chat_to.details.profile_pic.thumbnail.30x30 }}" class="rounded-circle user_img_msg">
+								</div>
+								<div class="msg_cotainer" style="min-width:100px;">
+									{{message.message_in}}
+
+									{% if message.event != None %}
+									<br> <font color="black" style="float:right;line-height: 0.4;font-size:7px;">#{{message.event.event_uen}}</font>{% endif %}
+									<span class="msg_time" >{{message.get_time.0}}</span>
+								</div>
+							</div>
+							{% elif message.user == user %}
+							<div class="d-flex justify-content-end mb-4" id="{{message.pk}}">
+								<div class="msg_cotainer_send" style="min-width:100px;">
+									{{message.message_in}}
+
+									{% if message.event != None %}
+									<br> <font color="black" style="float:right;line-height: 0.4;font-size:7px;">#{{message.event.event_uen}}</font>{% endif %}
+									<span class="msg_time" style="float:right;">{{message.get_time.0}}</span>
+								</div>
+
+							</div>
+							{% endif %}
+
+

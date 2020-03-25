@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 		<title>Chat  {{chat_to.username}}</title>
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -11,7 +12,7 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.js"></script>
 	</head>
-	<!--Coded With Love By Mutiullah Samim-->
+
     <style>
         	body,html{
 			height: 100%;
@@ -26,8 +27,8 @@
 			margin-bottom: auto;
 		}
 		.card{
-			height: 600px;
-			border-radius: 15px !important;
+
+
 			background-color: rgba(0,0,0,0.4) !important;
 		}
 		.contacts_body{
@@ -253,13 +254,42 @@
 }
     </style>
 
+<script>
+	function send_message(){
 
+		msg = document.getElementById('textareamsg').value;
+		document.getElementById('textareamsg').value = '';
+        $.ajax({
+            type: "POST",
+            url: "{% url 'post new msg' %}",
+            data: {
+            'second_user': "{{chat_to.username}}",
+            'message': msg,
+            'event_to': "{{event_to}}",
+             'csrfmiddlewaretoken': '{{ csrf_token }}'},
+            success : function(html) {
+
+                 $('#typing').remove();
+                 $('#msg_card_body').append(html);
+				document.getElementById('msg_card_body').innerHTML += '<div class="d-flex justify-content-start mb-4"  id="typing"></div>';
+				var element = document.getElementById("msg_card_body");
+				element.scrollTop = element.scrollHeight;
+
+             }
+                });
+                            }
+
+         function scroll_down(){
+	var elem = document.getElementById('msg_card_body');
+	elem.scrollTop = elem.scrollHeight;
+}
+</script>
 
 	<body>
 		<div class="container-fluid h-100">
 			<div class="row justify-content-center h-100">
-				<div class="col-md-8 col-xl-6 chat">
-					<div class="card" id="#card_message">
+				<div class="chat" style="height:100%; width:100%; max-width:900px;min-width:400px;">
+					<div class="card" id="#card_message" style="height:100%;">
 						<div class="card-header msg_head">
 							<div class="d-flex bd-highlight">
 								<div class="img_cont">
@@ -268,45 +298,50 @@
 								</div>
 								<div class="user_info">
 									<span>{{chat_to.first_name}} {{chat_to.last_name}}</span>
-									<p>{{chats.count}} Messages</p>
+									<p>{{chats_count}} Messages</p>
 								</div>
-								<div class="video_cam">
-									<span><i class="fas fa-video"></i></span>
-									<span><i class="fas fa-phone"></i></span>
-								</div>
+<!--								<div class="video_cam">-->
+<!--									<span><i class="fas fa-video"></i></span>-->
+<!--									<span><i class="fas fa-phone"></i></span>-->
+<!--								</div>-->
 							</div>
-							<span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
-							<div class="action_menu">
-								<ul>
-									<li><i class="fas fa-user-circle"></i> View profile</li>
-									<li><i class="fas fa-users"></i> Add to close friends</li>
-									<li><i class="fas fa-plus"></i> Add to group</li>
-									<li><i class="fas fa-ban"></i> Block</li>
-								</ul>
-							</div>
+<!--							<span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>-->
+<!--							<div class="action_menu">-->
+<!--								<ul>-->
+<!--									<li><i class="fas fa-user-circle"></i> View profile</li>-->
+<!--									<li><i class="fas fa-users"></i> Add to close friends</li>-->
+<!--									<li><i class="fas fa-plus"></i> Add to group</li>-->
+<!--									<li><i class="fas fa-ban"></i> Block</li>-->
+<!--								</ul>-->
+<!--							</div>-->
 						</div>
 
 						<div class="card-body msg_card_body" id="msg_card_body">
+
 							{% for message in chats %}
 							{% if message.user == chat_to %}
 							<div class="d-flex justify-content-start mb-4"  id="{{message.pk}}">
 								<div class="img_cont_msg" >
-									<img src="{{ chat_to.details.profile_pic.url }}" class="rounded-circle user_img_msg">
+									<img src="{{ chat_to.details.profile_pic.thumbnail.30x30 }}" class="rounded-circle user_img_msg">
 								</div>
-								<div class="msg_cotainer" style="min-width:100px;">
+								<div class="msg_cotainer" style="min-width:150px;">
 									{{message.message_in}}
-									<span class="msg_time" >{{message.get_time.0}} {{message.get_time.1}}</span>
+
+									{% if message.event != None %}
+									<br> <font color="black" style="float:right;line-height: 0.4;font-size:7px;">#{{message.event.event_uen}}</font>{% endif %}
+									<span class="msg_time" >{{message.get_time.0}} | {{message.get_time.1}}</span>
 								</div>
 							</div>
 							{% elif message.user == user %}
 							<div class="d-flex justify-content-end mb-4" id="{{message.pk}}">
-								<div class="msg_cotainer_send"  style="min-width:100px;">
+								<div class="msg_cotainer_send" style="min-width:150px;display: inline-block;">
 									{{message.message_in}}
-									<span class="msg_time_send">{{message.get_time.0}} {{message.get_time.1}}</span>
+									{% if message.event != None %}
+									<br> <font color="black" style="float:right;line-height: 0.4;font-size:7px;">#{{message.event.event_uen}}</font>{% endif %}
+									<div style="display: inline-block;" class="msg_time_send">{{message.get_time.0}} | {{message.get_time.1}}</div>
+
 								</div>
-								<div class="img_cont_msg" >
-							<img src="{{ user.details.profile_pic.url }}" class="rounded-circle user_img_msg">
-								</div>
+
 							</div>
 							{% endif %}
 							{% endfor %}
@@ -321,19 +356,19 @@
 
                         <div id="#bottom_msg"></div>
 						<div class="card-footer" >
-							<form method="post" action="">
+
 								{% csrf_token %}
 								<div class="input-group">
 									<div class="input-group-append">
 										<span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
 									</div>
-									<textarea  class="form-control type_msg" name="message" id="textareamsg" placeholder="Type your message..."></textarea>
+									<textarea  class="form-control type_msg" onclick="scroll_down()" name="message" id="textareamsg" placeholder="Type your message..."></textarea>
 
-									<div class="input-group-append" onclick="document.forms[0].submit();">
+									<div class="input-group-append" onclick="send_message()">
 										<span class="input-group-text send_btn"><i class="fas fa-location-arrow"></i></span>
 									</div>
 								</div>
-							</form>
+
 						</div>
 					</div>
 				</div>
@@ -346,9 +381,7 @@ $('#action_menu_btn').click(function(){
 	$('.action_menu').toggle();
 });
 
-var elem = document.getElementById('msg_card_body');
-elem.scrollTop = elem.scrollHeight;
-
+scroll_down();
 	});
 
 
@@ -356,72 +389,54 @@ elem.scrollTop = elem.scrollHeight;
 <script>
 	$("#textareamsg").keypress(function (e) {
     if(e.which == 13 && !e.shiftKey) {
-        $(this).closest("form").submit();
+        send_message();
         e.preventDefault();
     }
 });
 </script>
 
 <script>
-	$(document).ready(function(){
+// for checking new msg and if second user is typing
+$(document).ready(function(){
 
 
-function getCookie(c_name)
-{
-    if (document.cookie.length > 0)
-    {
-        c_start = document.cookie.indexOf(c_name + "=");
-        if (c_start != -1)
-        {
-            c_start = c_start + c_name.length + 1;
-            c_end = document.cookie.indexOf(";", c_start);
-            if (c_end == -1) c_end = document.cookie.length;
-            return unescape(document.cookie.substring(c_start,c_end));
-        }
-    }
-    return "";
- }
 
-
-	$(function () {
-    $.ajaxSetup({
-        headers: { "X-CSRFToken": getCookie("csrftoken") }
-    });
-});
-	    var elemValue = document.getElementById('msg_card_body').lastChild.previousSibling;
-    var pk = elemValue.previousElementSibling.id;
 	var append = 0;
-  var myFunction = function() {
+    var myFunction = function() {
 
     var text_len = document.getElementById('textareamsg').value.length;
-  $.ajax({
+    var elemValue = document.getElementById('msg_card_body').lastChild.previousSibling;
+    var pk = elemValue.previousElementSibling.id;
+    $.ajax({
             url: "/messages/get_new/{{chat_to.username}}/",
             type: "POST",
             data: {
-                element: pk,
-                text: text_len
-            },
+                   'element': pk,
+                   'text': text_len,
+                   'csrfmiddlewaretoken': '{{ csrf_token }}'
+                   },
             success: function(result) {
-            if(result == "-1"){
-               window.location.reload();
-            }
-            else if(result == "1t"){
-				document.getElementById('typing').innerHTML = '<div class="img_cont_msg" ><img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img_msg"></div><div class="msg_cotainer" style="min-width:100px;">	typing...</div>';
-            }
-            else if(result == "0t"){
-				document.getElementById('typing').innerHTML = '';
+				if(result == "-1"){
+					// alert("something gone wrong, reloading the page may solve this.");
 				}
-            else if(result.result==1 && append != result.id){
+				else if(result == "1t"){
+					document.getElementById('typing').innerHTML = '<div class="img_cont_msg" ><img src="{{ chat_to.details.profile_pic.url }}" class="rounded-circle user_img_msg"></div><div class="msg_cotainer" style="min-width:100px;">	typing...</div>';
+					}
+				else if(result == "0t"){
+					document.getElementById('typing').innerHTML = '';
+					}
+				else if(result.result==1 && append != result.id){
 
-            	document.getElementById("typing").remove();
-                document.getElementById('msg_card_body').innerHTML += '<div class="d-flex justify-content-start mb-4"  id="' + result.id + '"><div class="img_cont_msg" ><img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img_msg"></div><div class="msg_cotainer" style="min-width:100px;">' + result.msg + '<span class="msg_time" ></span></div></div>';
-				document.getElementById('msg_card_body').innerHTML += '<div class="d-flex justify-content-start mb-4"  id="typing"></div>';
-				append = result.id;
-				pk = result.id;
-				window.location.href = '#'+result.id;
-                }},
+					document.getElementById("typing").remove();
+					document.getElementById('msg_card_body').innerHTML += result.html;
+					document.getElementById('msg_card_body').innerHTML += '<div class="d-flex justify-content-start mb-4"  id="typing"></div>';
+					append = result.id;
+					pk = result.id;
+					window.location.href = '#'+result.id;
+					}},
             error: function(result){
-                alert("something gone wrong");}
+
+                }
           });
           };
 
@@ -431,82 +446,4 @@ setInterval(myFunction, 1000);
 
 </html>
 {% endblock %}
-<!--
-				<div class="col-md-4 col-xl-3 chat"><div class="card mb-sm-3 mb-md-0 contacts_card">
-					<div class="card-header">
-						<div class="input-group">
-							<input type="text" placeholder="Search..." name="" class="form-control search">
-							<div class="input-group-prepend">
-								<span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
-							</div>
-						</div>
-					</div>
-					<div class="card-body contacts_body">
-						<ui class="contacts">
-						<li class="active">
-							<div class="d-flex bd-highlight">
-								<div class="img_cont">
-									<img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img">
-									<span class="online_icon"></span>
-								</div>
-								<div class="user_info">
-									<span>Khalid</span>
-									<p>Kalid is online</p>
-								</div>
-							</div>
-						</li>
-						<li>
-							<div class="d-flex bd-highlight">
-								<div class="img_cont">
-									<img src="https://2.bp.blogspot.com/-8ytYF7cfPkQ/WkPe1-rtrcI/AAAAAAAAGqU/FGfTDVgkcIwmOTtjLka51vineFBExJuSACLcBGAs/s320/31.jpg" class="rounded-circle user_img">
-									<span class="online_icon offline"></span>
-								</div>
-								<div class="user_info">
-									<span>Taherah Big</span>
-									<p>Taherah left 7 mins ago</p>
-								</div>
-							</div>
-						</li>
-						<li>
-							<div class="d-flex bd-highlight">
-								<div class="img_cont">
-									<img src="https://i.pinimg.com/originals/ac/b9/90/acb990190ca1ddbb9b20db303375bb58.jpg" class="rounded-circle user_img">
-									<span class="online_icon"></span>
-								</div>
-								<div class="user_info">
-									<span>Sami Rafi</span>
-									<p>Sami is online</p>
-								</div>
-							</div>
-						</li>
-						<li>
-							<div class="d-flex bd-highlight">
-								<div class="img_cont">
-									<img src="http://profilepicturesdp.com/wp-content/uploads/2018/07/sweet-girl-profile-pictures-9.jpg" class="rounded-circle user_img">
-									<span class="online_icon offline"></span>
-								</div>
-								<div class="user_info">
-									<span>Nargis Hawa</span>
-									<p>Nargis left 30 mins ago</p>
-								</div>
-							</div>
-						</li>
-						<li>
-							<div class="d-flex bd-highlight">
-								<div class="img_cont">
-									<img src="https://static.turbosquid.com/Preview/001214/650/2V/boy-cartoon-3D-model_D.jpg" class="rounded-circle user_img">
-									<span class="online_icon offline"></span>
-								</div>
-								<div class="user_info">
-									<span>Rashid Samim</span>
-									<p>Rashid left 50 mins ago</p>
-								</div>
-							</div>
-						</li>
-						</ui>
-					</div>
-					<div class="card-footer"></div>
-				</div></div>
-
-/>
 

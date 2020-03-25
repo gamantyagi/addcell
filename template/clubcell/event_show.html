@@ -156,7 +156,7 @@
 </span>
             <div class="media"></div>
         </div>
-    </div><button type="button" onclick="window.open('{{path}}/messages/chat/{{event.club.user.username}}','popUpWindow','height=600,width=500,left=10,top=10,,,menubar=no'); return false;" class="btn-outline-success" style="width:50%;">Message</button>{% if event_detail.event_id not in event_register %}<button type="button" class="btn-outline-success" value="{{event_detail.event_id}}" id="rg{{event_detail.event_UAP}}" style="width:50%;">Register</button>{% else %}<button type="button" class="btn-outline-success" style="width:50%; background-color:green;color:white" disabled>Registered</button>{% endif %}
+    </div><button type="button" onclick="window.open('{{path}}/messages/chat/{{event.club.user.username}}/?e={{event.event_uen}}','popUpWindow','height=600,width=500,left=10,top=10,,,menubar=no'); return false;" class="btn-outline-success" style="width:49.5%;">Message</button>{% if event not in event_registered %}<button type="button" class="btn-outline-success" value="{{event_detail.event_id}}" id="rg{{event_detail.event_UAP}}" style="width:49.5%;float:right;">Register</button>{% else %}<button type="button" class="btn-outline-success" style="width:49.5%;float:right;background-color:green;color:white" disabled>Registered</button>{% endif %}
     <br><br>
       <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#queryBox" style="width:100%;">Related queries</button>
 
@@ -174,7 +174,7 @@
 
                             <span style="float:right;"><a onclick="replyto('{{query.pk}}','{{query.pk}}-{{query.user.pk}}', '{{query.user}}')" href="#askquery"><u>Reply</u></a></span>
                        {% if query.user == user %}
-                                 <span style="float:right; display:inline-block;margin-right:1rem;"><a onclick="dlt_query('{{event.event_uen}}','{{query.pk}}')"><font color="Red"><u>Delete</u></font></a></span>
+                                 <span style="cursor: pointer;float:right; display:inline-block;margin-right:1rem;"><a onclick="dlt_query('{{event.event_uen}}','{{query.pk}}')"><font color="Red"><u>Delete</u></font></a></span>
                             {% endif %}
 
                         </div>
@@ -189,7 +189,7 @@
 
                                     <span style="float:right;"><a onclick="replyto('{{query.pk}}','{{query.pk}}-{{reply.user.pk}}', '{{reply.user}}')" href="#askquery"><u>Reply</u></a></span>
                                     {% if reply.user == user %}
-                                    <span style="float:right; display:inline-block; margin-right:1rem;"><a onclick="dlt_query('{{event.event_uen}}','{{reply.pk}}')" ><font color="Red"><u>Delete</u></font></a></span>
+                                    <span style="cursor: pointer;float:right; display:inline-block; margin-right:1rem;"><a onclick="dlt_query('{{event.event_uen}}','{{reply.pk}}')" ><font color="Red"><u>Delete</u></font></a></span>
                                      {% endif %}
                                 </div>
                                 </div>

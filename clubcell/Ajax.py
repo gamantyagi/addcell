@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User
-from clubcell.models import events, event_participants, details, team, members, event_query
+from django.utils import timezone
+
+from clubcell.models import events, event_participants, details, team, members, event_query, messages, event_wishlist
 from django.http import HttpResponse
 import sys
 import csv
 import json
 from clubcell.ML import Logs
+from .Common import GetData
 from .Constants import Paths
 import os
 
@@ -51,14 +54,44 @@ class Ajax:
 
     @staticmethod
     def event_register(request):
-        if request.method == "GET" and request.user.is_authenticated:  # os request.GET()
-            event_id = request.GET.get('element', None)
+        if request.method == "POST" and request.user.is_authenticated and request.is_ajax():  # os request.GET()
+            event_id = request.POST.get('element', None)
             try:
                 user = request.user
                 event = events.objects.get(event_id=event_id)
                 if event.registration and not event_participants.objects.filter(events=event, user=user).exists():
                     register_member = event_participants(user=user, club=event.club, events=event)
                     register_member.save()
+                    result = event.event_uen  # it it used to change html of desire button, ID of that element
+                    return HttpResponse(json.dumps(result), content_type="application/json")
+                elif event.registration and event_participants.objects.filter(events=event, user=user).exists():
+                    result = "Already registered"
+                    return HttpResponse(json.dumps(result), content_type="application/json")
+                elif not event.registration:
+                    result = "closed"
+                    return HttpResponse(json.dumps(result), content_type="application/json")
+                else:
+                    print("not expected")
+                    return HttpResponse(json.dumps("specious"), content_type="application/json")
+            except Exception as e:
+                print(e)
+                return HttpResponse(json.dumps("wrong"), content_type="application/json")
+        else:
+            return HttpResponse(json.dumps("Suspicious Activity by user"), content_type="application/json")
+
+    @staticmethod
+    def event_wishlist(request):
+        if request.method == "POST" and request.user.is_authenticated and request.is_ajax():  # os request.GET()
+            event_id = request.POST.get('element', None)
+            try:
+                user = request.user
+                event = events.objects.get(event_id=event_id)
+                if event_wishlist.objects.filter(events=event, user=user).exists():
+                    result = "already wishlist"
+                    return HttpResponse(json.dumps(result), content_type="application/json")
+                elif event.registration and not event_participants.objects.filter(events=event, user=user).exists():
+                    wishlist_member = event_wishlist(user=user, events=event)
+                    wishlist_member.save()
                     result = event.event_uen  # it it used to change html of desire button, ID of that element
                     return HttpResponse(json.dumps(result), content_type="application/json")
                 elif event.registration and event_participants.objects.filter(events=event, user=user).exists():
@@ -269,8 +302,153 @@ class ClubLoadHtml:
     @staticmethod
     def messages_and_queries(request):
         if request.user.is_authenticated and request.is_ajax() and request.method == "POST":
-
+            user = request.user
+            uen = request.POST['uen']
+            try:
+                even_to = events.objects.get(event_uen=uen)
+            except:
+                even_to = None
             html = render_to_string('ajax/club_event_messages.html', {'user': user,
-                                                                     },
+                                                                      'messages': GetData.distinct_messages(request,
+                                                                                                            even_to),
+                                                                      'uen': uen
+                                                                      },
                                     request=request)
+            return HttpResponse(html)
+
+    @staticmethod
+    def one_to_one_chat(request):  # for events message handling
+        if request.user.is_authenticated and request.is_ajax() and request.method == "POST":
+            user = request.user
+            chat_to = request.POST['second_user']
+            uen = request.POST['uen']
+            try:
+                event_to = events.objects.get(event_uen=uen)
+                uen = event_to.eventname
+            except:
+                event_to = None
+                uen = 'all'
+            mstart = int(request.POST['mstart'])  # mstart and mend are the message slice range that we want to load
+            mend = int(request.POST['mend'])
+            chat_to_user = User.objects.get(username=chat_to)
+            if uen == 'all':
+                chats = (messages.objects.filter(user=chat_to_user, second_user=user).union(
+                    messages.objects.filter(user=user, second_user=chat_to_user))).order_by(
+                    'date_and_time')[::-1][
+                        mstart:mend][::-1]
+            else:
+                chats = (messages.objects.filter(user=chat_to_user, second_user=user, event=event_to).union(
+                    messages.objects.filter(user=user, second_user=chat_to_user, event=event_to))).order_by(
+                    'date_and_time')[::-1][
+                        mstart:mend][::-1]
+            if len(chats) == 0:
+                mend = -12
+            html = render_to_string('ajax/msg_text_box.html', {'user': user,
+                                                               'chats': chats,
+                                                               'chat_to': chat_to_user,
+                                                               'mstart': mstart + 12,
+                                                               'mend': mend + 12,
+                                                               'script_load': 'true'
+                                                               },
+                                    request=request)
+            return HttpResponse(html)
+
+    @staticmethod
+    def receive_chat(request):
+        if request.user.is_authenticated and request.is_ajax() and request.method == "POST":
+            user = request.user
+            uen = request.POST['event_to']
+            chat_to = request.POST['second_user']
+            chat_to_user = User.objects.get(username=chat_to)
+            message_sent = request.POST['message']
+            message_sent = message_sent.lstrip()
+            if message_sent != '':
+                try:
+                    event = events.objects.get(event_uen=uen)
+                except:
+                    event = None
+                now = timezone.now()
+                new_msg = messages(user=user, second_user=chat_to_user, message_in=message_sent, date_and_time=now,
+                                   event=event)
+                new_msg.save()
+                new_msg = messages.objects.filter(user=user, second_user=chat_to_user, message_in=message_sent,
+                                                  date_and_time=now)
+
+                html = render_to_string('ajax/msg_text_box.html', {'user': user,
+                                                                     'chat_to': chat_to_user,
+                                                                     'chats': new_msg,
+                                                                     'mend': 0,
+                                                                     'show_span': 0
+                                                                     },
+                                        request=request)
+                return HttpResponse(html)
+            return HttpResponse('')
+
+    @staticmethod
+    def get_new_message(request):
+        if request.user.is_authenticated and request.is_ajax() and request.method == "POST":
+            user = request.user
+            chat_to = request.POST['second_user']
+            gpk = request.POST['element'][2::]
+            txt_len = int(request.POST['text'])
+            chat_to_user = User.objects.get(username=chat_to)
+
+            uen = request.POST['uen']
+            try:
+                event_to = events.objects.get(event_uen=uen)
+                uen = event_to.eventname
+            except:
+                event_to = None
+                uen = 'all'
+
+            # now we will get if second user is typing or not and set if we are also typing
+            second_typing = GetData.typing_message(txt_len, user, chat_to_user)
+            if uen == 'all':
+                chats = (messages.objects.filter(user=chat_to_user, second_user=user).union(
+                    messages.objects.filter(user=user, second_user=chat_to_user))).order_by('date_and_time')
+            else:
+                chats = (messages.objects.filter(user=chat_to_user, second_user=user, event=event_to).union(
+                    messages.objects.filter(user=user, second_user=chat_to_user, event=event_to))).order_by(
+                    'date_and_time')
+            last = chats.latest('date_and_time')
+            if last.user == chat_to_user and last.seen == False:
+                last.seen = True
+                last.save()
+            if last.pk == int(gpk):
+                return HttpResponse(json.dumps("%dt" % second_typing), content_type="application/json")
+            elif last.pk != int(gpk) and int(gpk) < last.pk and last.user != user:
+                html = render_to_string('ajax/msg_text_box.html', {'user': user,
+                                                                     'chat_to': chat_to_user,
+                                                                     'chats': [last,],
+                                                                     'mend': 0,
+                                                                     'show_span': 0
+                                                                     },
+                                        request=request)
+                dict_data = {'result': 1, 'html': html, 'id': last.pk}
+                return HttpResponse(json.dumps(dict_data), content_type="application/json")
+            else:
+                # return HttpResponse(json.dumps("-1"), content_type="application/json")
+                return HttpResponse(json.dumps("-1"), content_type="application/json")
+        else:
+            return HttpResponse(json.dumps("unknown"), content_type="application/json")
+
+
+class StudentLoadHtml:
+
+    @staticmethod
+    def profile_load_event(request):
+        if request.user.is_authenticated and request.method == "POST" and request.is_ajax():
+            user = request.user
+            to_load = request.POST['to_load']
+            if to_load == "wishlist":
+                html = render_to_string('ajax/event_box.html', {'user': user,
+                                                                'events': event_wishlist.objects.filter(user=user),
+                                                                },
+                                        request=request)
+            elif to_load == "registered":
+                html = render_to_string('ajax/event_box.html', {'user': user,
+                                                                'events': event_participants.objects.filter(
+                                                                    user=user),
+                                                                },
+                                        request=request)
             return HttpResponse(html)

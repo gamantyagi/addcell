@@ -6,7 +6,7 @@
 
                             <span style="float:right;"><a onclick="replyto('{{query.pk}}','{{query.pk}}-{{query.user.pk}}', '{{query.user}}')" href="#askquery"><u>Reply</u></a></span>
                        {% if query.user == user %}
-                                 <span style="float:right; display:inline-block;margin-right:1rem;"><a onclick="dlt_query('{{event.event_uen}}','{{query.pk}}')" ><font color="Red"><u>Delete</u></font></a></span>
+                                 <span style="cursor: pointer;float:right; display:inline-block;margin-right:1rem;"><a onclick="dlt_query('{{event.event_uen}}','{{query.pk}}')" ><font color="Red"><u>Delete</u></font></a></span>
                             {% endif %}
 
                         </div>

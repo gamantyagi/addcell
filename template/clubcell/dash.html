@@ -135,7 +135,7 @@
                             {% for event in events_todo %}
                             <li class="list-group-item" >
                                 <div class="row align-items-center no-gutters">
-                                    <div class="col mr-2" value="{{event.event_uen}}" id="redirect{{event.eventname}}">
+                                    <div class="col mr-2" value="{{event.event_uen}}" id="redirect{{event.eventname}}" style="cursor:pointer;">
                                         <h6  class="mb-0"><strong>{{event.eventname}}</strong></h6><span class="text-xs">{{event.heldon}}</span></div>
                                     <div class="col-auto">
                                         <div class="custom-control custom-checkbox"><input class="custom-control-input" type="checkbox" {% if event.registration == True %}checked{% endif %} id="{{event.eventname}}" value="{{event.event_id}}"><label class="custom-control-label" for="{{event.eventname}}"></label></div>

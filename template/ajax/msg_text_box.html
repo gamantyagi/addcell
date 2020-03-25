@@ -1,0 +1,123 @@
+{% if mend != 0 %}
+<div id="temp_for_load{{mstart}}">
+<script>
+
+  function load_chat_again(){
+        $( "#load_more_msg" ).remove();
+        var elem = document.getElementById('msg_history_box');
+        var scroll_bar = elem.scrollHeight;
+        $.ajax({
+            type: "POST",
+            url: "{% url 'load chat' %}",
+            data: {'second_user': "{{chat_to}}",
+                    'mstart': {{mstart}},
+                    'mend': {{mend}},
+                    'uen': "all",
+             'csrfmiddlewaretoken': '{{ csrf_token }}'},
+            success : function(data) {
+                 $('#msg_history_box').prepend(data);
+                 $( "#temp_for_load{{mstart}}" ).remove();
+                elem.scrollTop = elem.scrollHeight - scroll_bar;
+
+
+
+
+
+             }
+                });
+
+                            }
+</script>
+<div id="load_more_msg"  >
+
+    <center> <button onclick="load_chat_again()">Click to load messages</button></center><br>
+
+</div>
+</div>
+
+{% endif %}
+{% if mstart == 12 %}
+	<script>
+	// for checking new msg and if second user is typing
+$(document).ready(function(){
+		var append = 0;
+    var myFunction = function() {
+
+    var text_len = document.getElementById('msg_input_box').value.length;
+    var elemValue = document.getElementById('msg_history_box').lastChild.previousSibling;
+    var pk = elemValue.previousElementSibling.id;
+    $.ajax({
+            url: "{% url 'get new msg' %}",
+            type: "POST",
+            data: {
+                   'element': pk,
+                   'text': text_len,
+                   'second_user': "{{chat_to}}",
+                   'uen': "all",
+                   'csrfmiddlewaretoken': '{{ csrf_token }}'
+                   },
+            success: function(result) {
+
+				if(result == "-1"){
+					// alert("something gone wrong, reloading the page may solve this.");
+				}
+				else if(result == "1t"){
+					document.getElementById('typing').innerHTML = '<div class="incoming_msg_img"> <img src="{{ chat_to_user.details.profile_pic.thumbnail.30x30 }}" alt="{{ chat_to }}"> </div><div class="received_msg"><div class="received_withd_msg"><p>Typing...</p</div></div>'										}
+				else if(result == "0t"){
+					document.getElementById('typing').innerHTML = '';
+					}
+				else if(result.result==1 && append != result.id){
+                    var elemValue = document.getElementById('msg_history_box').lastChild.previousSibling;
+                    var pk = elemValue.previousElementSibling.id;
+                        if (result.id != pk ){
+                        document.getElementById("typing").remove();
+                        document.getElementById('msg_history_box').innerHTML += result.html;
+                        document.getElementById('msg_history_box').innerHTML += '<div class="incoming_msg"  id="typing"></div>';
+                        append = result.id;
+                        pk = result.id;
+
+                var element = document.getElementById("msg_history_box");
+				element.scrollTop = element.scrollHeight;					}
+				}
+					},
+            error: function(result){
+
+                }
+          });
+          };
+
+try{
+clearInterval(get_new_message);
+}
+catch(err) {}
+get_new_message = setInterval(myFunction, 1000);
+});
+	</script>
+{% endif %}
+        {% if show_span != 0 %}
+        <span id="starting{{mstart}}"></span>{% endif %}
+        {% for message in chats %}
+        {% if message.user == chat_to %}
+            <div class="incoming_msg" id="{{message.pk}}" >
+              <div class="incoming_msg_img"> <img src="{{ chat_to.details.profile_pic.thumbnail.30x30 }}" alt="{{ chat_to }}"> </div>
+              <div class="received_msg">
+                <div class="received_withd_msg">
+                  <p>{{message.message_in}}
+                  {% if message.event != None %}
+									<br> <font color="black" style="float:right;line-height: 0.4;font-size:7px;">#{{message.event.event_uen}}</font>{% endif %}
+                  </p>
+                  <span class="time_date"> {{message.get_time.0}}  |  {{message.get_time.1}}</span></div>
+              </div>
+            </div>
+        {% elif message.user == user %}
+            <div class="outgoing_msg" id="{{message.pk}}">
+              <div class="sent_msg">
+                <p>{{message.message_in}}
+                {% if message.event != None %}
+									<br> <font color="white" style="float:right;line-height: 0.4;font-size:7px;">#{{message.event.event_uen}}</font>{% endif %}
+                </p>
+                <span class="time_date"> {{message.get_time.0}}  |  {{message.get_time.1}}</span> </div>
+            </div>
+        {% endif %}
+        {% endfor %}
+
