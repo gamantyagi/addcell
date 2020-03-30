@@ -123,7 +123,7 @@ class alerts(models.Model):
 
 
 class following(models.Model):
-    user = models.ForeignKey(User, related_name='following', on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name='following', on_delete=models.CASCADE)
     follower = models.ManyToManyField(User, related_name='follower')
 
 
@@ -184,10 +184,16 @@ class members(models.Model):
 
 class group_event(models.Model):
     club = models.ForeignKey(clubcell, on_delete=models.CASCADE)
-    group_name = models.CharField(max_length=100)
+    group_name = models.CharField(max_length=30)
+    parent_group = models.ForeignKey('self', on_delete=models.CASCADE, default=None, blank=True, null=True,
+                                     related_name='group_event')
+    thumbnail = models.CharField(max_length=500, default="https://i.redd.it/b3esnz5ra34y.jpg")
 
     def __str__(self):
-        return self.group_name
+        if self.parent_group is not None:
+            return self.group_name + "--------" + self.club.clubname + "--------" + self.parent_group.group_name
+        else:
+            return self.group_name + "========" + self.club.clubname
 
 
 class events(models.Model):
@@ -216,7 +222,7 @@ class events(models.Model):
         (PUBLIC, 'Public')
     ]
     club = models.ForeignKey(clubcell, on_delete=models.CASCADE, related_name='events')
-    parent_event = models.ForeignKey(group_event, on_delete=models.CASCADE, blank=True)
+    group_event = models.ForeignKey(group_event, blank=True, on_delete=models.SET_DEFAULT, default=None, null=True)
     PAN = models.CharField(max_length=100)
     event_id = models.CharField(max_length=100, unique=True, default=pan_generate)
     event_uen = models.CharField(max_length=30, unique=True)
@@ -239,12 +245,14 @@ class events(models.Model):
     privacy = models.CharField(max_length=2, choices=PRIVACY, default=PUBLIC)
     registration = models.BooleanField(default=True)
     dl = models.BooleanField(default=False)
+    custom_inputs = models.ManyToManyField('custom_input', blank=True, default=None)
     event_complete = models.CharField(max_length=1, choices=EVENT_SITUATION_CHOICE, default=PENDING)
+    event_thumbnail = VersatileImageField(upload_to="events/thumbnail", default="event.jpg")
     objects = models.Manager()
 
     def __str__(self):
         d = {'P': 'Pending...', 'C': 'Canceled!', 'D': 'Done'}
-        return str(self.event_uen) + ' ' + str(d[self.event_complete])
+        return str(self.event_uen) + ' ' + d[self.event_complete]
 
     def time_old(self):
         deadline = self.heldon - timezone.now()
@@ -260,6 +268,13 @@ class events(models.Model):
         else:
             show = 'event day, wish you best...'
         return [show, days, hours, int(minutes), int(seconds)]
+
+
+class related_images(models.Model):
+    event = models.ForeignKey(events, on_delete=models.CASCADE, related_name='related_images')
+    img = VersatileImageField(upload_to="events/related_images", default="event.jpg")
+    type = models.CharField(max_length=50, default="collapse")
+    alt = models.CharField(max_length=100, default="")
 
 
 class event_participants(models.Model):
@@ -311,6 +326,37 @@ class event_query(models.Model):
 
     def __str__(self):
         return self.query
+
+
+class custom_input(models.Model):
+    TEXT = 'T'
+    INTEGER = 'I'
+    CHOICE = 'C'
+    MULTIPLE_CHOICE = 'MC'
+    TYPE = [
+        (TEXT, 'Text'),
+        (INTEGER, 'Integer'),
+        (CHOICE, 'Choice'),
+        (MULTIPLE_CHOICE, 'Multiple Choice')
+    ]
+    input_name = models.CharField(max_length=50)
+    input_reference = models.CharField(max_length=200)
+    input_type = models.CharField(max_length=3, choices=TYPE, default=TEXT)
+    max_length = models.IntegerField(default=50)
+    choice_option = models.CharField(max_length=2000, default=None, blank=True, null=True)
+    required = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.input_name + "------" + self.input_type
+
+
+class custom_input_value(models.Model):
+    input = models.ForeignKey(custom_input, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    value = models.CharField(max_length=500)
+
+    def __str__(self):
+        return self.input_name + "------" + self.value + "===>" + self.user.username
 
 
 class posts(models.Model):
@@ -428,12 +474,11 @@ class Club:
                 dl_about = request.POST['dl_about']
             except:
                 duty_leave = 'False'
-            parent = group_event.objects.get(group_name="MAIN", club=user.clubcell)
             event_id = General.generate('event@')
             event = events(club=user.clubcell, PAN=user.details.PAN, event_id=event_id, eventname=eventname,
                            eventtype=eventtype,
                            season=season, heldon=heldon, breif_about=breif_about, tags=tags,
                            paid=paid, fee=fee, certificate=certificate, dl=duty_leave, event_uen=event_UAP,
-                           event_detail=detail_about, parent_event=parent)
+                           event_detail=detail_about)
             event.save()
         return redirect(Paths.EVENT_TODO_MAIN)

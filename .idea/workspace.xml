@@ -2,37 +2,51 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="809fe728-186f-4cbe-9c91-f9376f2605ee" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/clubcell/migrations/0051_messages_event.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/__sized__/default-thumbnail-120x200-70.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/__sized__/default-thumbnail-200x120-70.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/__sized__/default-thumbnail-30x30-70.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/__sized__/media/user/123456hgfyt7gc44cfgfde2154654YUFGhvhjj5HGFHkjhijhtu6ytfhgc2146lTRSu6tRhgcgfSTrWRg_UqbPVXZ-thumbnail-120x200-70.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/__sized__/media/user/123456hgfyt7gc44cfgfde2154654YUFGhvhjj5HGFHkjhijhtu6ytfhgc2146lTRSu6tRhgcgfSTrWRg_UqbPVXZ-thumbnail-200x120-70.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/__sized__/profile_images/Screenshot_from_2020-01-17_17-09-17-thumbnail-120x200.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/__sized__/profile_images/Screenshot_from_2020-01-17_17-09-17-thumbnail-200x120.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/__sized__/profile_images/naakul-thumbnail-120x200-70.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/__sized__/profile_images/naakul-thumbnail-200x120-70.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/template/ajax/event_box.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/template/ajax/msg_text_box.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/template/common/new_msg_box.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubcell/migrations/0052_auto_20200326_0712.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubcell/migrations/0053_group_event_thumbnail.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubcell/migrations/0054_auto_20200327_1305.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubcell/migrations/0055_custom_input.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubcell/migrations/0056_custom_input_value.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubcell/migrations/0057_events_custom_inputs.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubcell/migrations/0058_custom_input_required.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubcell/migrations/0059_auto_20200329_0810.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubcell/migrations/0060_auto_20200329_0852.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubcell/migrations/0061_auto_20200329_1844.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubcell/migrations/0062_related_images_type.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/__sized__/event-thumbnail-400x150-70.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/__sized__/event-thumbnail-800x300-70.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/__sized__/events/thumbnail/7_OptCZ5T-min-thumbnail-400x150.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/__sized__/events/thumbnail/7_OptCZ5T-min-thumbnail-800x300.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/event.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/events/related_images/15_KrMqEx1-min.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/events/related_images/2_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/events/related_images/WhatsApp_Image_2020-01-19_at_07.59.39.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/events/related_images/chevrolet-beat-front-photo.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/events/related_images/images.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/events/related_images/images_03HL154.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/events/related_images/photo-1492684223066-81342ee5ff30.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/events/thumbnail/7_OptCZ5T-min.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/template/ajax/groupevent.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/template/ajax/single_group.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/addcell/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/addcell/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/clubcell/Ajax.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/Ajax.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clubcell/Common.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/Common.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/clubcell/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/clubcell/caaa.cpp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/clubcell/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/clubcell/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/clubcell/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/ajax/ask_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/ajax/ask_query.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/ajax/club_event_messages.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/ajax/club_event_messages.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/ajax/queries_and_alerts.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/ajax/queries_and_alerts.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/ajax/reply_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/ajax/reply_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template/clubcell/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/clubcell/base.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/template/clubcell/base2.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/clubcell/base2.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template/clubcell/base_up.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/clubcell/base_up.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/template/clubcell/dash.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/clubcell/dash.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template/clubcell/event_done.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/clubcell/event_done.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/template/clubcell/event_show.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/clubcell/event_show.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/clubcell/event_todo_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/clubcell/event_todo_table.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template/clubcell/events_todos.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/clubcell/events_todos.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/template/clubcell/members.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/clubcell/members.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/template/common/message_chat.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/common/message_chat.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/template/studentcell/shome.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/studentcell/shome.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template/studentcell/shometemp.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/template/studentcell/sposts.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/studentcell/sposts.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/template/studentcell/sprofile.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/studentcell/sprofile.html" afterDir="false" />
     </list>
@@ -107,10 +121,10 @@
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="482" y="188" key="SettingsEditor/67.27.1853.1053@67.27.1853.1053" timestamp="1578403826253" />
-    <state x="646" y="380" key="com.intellij.ide.util.TipDialog" timestamp="1585104504879">
+    <state x="646" y="380" key="com.intellij.ide.util.TipDialog" timestamp="1585564739062">
       <screen x="63" y="27" width="1857" height="1053" />
     </state>
-    <state x="646" y="380" key="com.intellij.ide.util.TipDialog/63.27.1857.1053@63.27.1857.1053" timestamp="1585104504879" />
+    <state x="646" y="380" key="com.intellij.ide.util.TipDialog/63.27.1857.1053@63.27.1857.1053" timestamp="1585564739062" />
     <state x="649" y="380" key="com.intellij.ide.util.TipDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1578402384249" />
     <state x="638" y="149" width="735" height="807" key="find.popup" timestamp="1579600139735">
       <screen x="63" y="27" width="1857" height="1053" />

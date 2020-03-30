@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from .models import details, clubcell, events, messages, alerts, members, review, posts, like, comments, \
-    event_participants, event_wishlist
+    event_participants, event_wishlist, custom_input, related_images
 from .models import following, interest, team, group_event, event_query
 
 
@@ -92,13 +92,13 @@ class clubAdmin(admin.ModelAdmin):
     search_fields = ('clubname', 'user',)
     inlines = (eventsInline, groupeventInline, membersInline, teamInline,)
 
-
-@admin.register(events)
-class clubAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'club',)
-    ordering = ('event_uen',)
-    search_fields = ('event_uen', 'club',)
-    inlines = (eventparticipantInline, postsInline)
+#
+# @admin.register(events)
+# class clubAdmin(admin.ModelAdmin):
+#     list_display = ('__str__', 'club',)
+#     ordering = ('event_uen',)
+#     search_fields = ('event_uen', 'club',)
+#     inlines = (eventparticipantInline, postsInline)
 
 
 """@admin.register(events)
@@ -119,3 +119,7 @@ admin.site.register(posts)
 admin.site.register(event_query)
 admin.site.register(event_participants)
 admin.site.register(event_wishlist)
+admin.site.register(group_event)
+admin.site.register(custom_input)
+admin.site.register(events)
+admin.site.register(related_images)

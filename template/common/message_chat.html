@@ -255,6 +255,7 @@
     </style>
 
 <script>
+
 	function send_message(){
 
 		msg = document.getElementById('textareamsg').value;
@@ -400,7 +401,7 @@ scroll_down();
 $(document).ready(function(){
 
 
-
+	var result_copy = '';
 	var append = 0;
     var myFunction = function() {
 
@@ -413,6 +414,7 @@ $(document).ready(function(){
             data: {
                    'element': pk,
                    'text': text_len,
+                   'result_copy': result_copy,
                    'csrfmiddlewaretoken': '{{ csrf_token }}'
                    },
             success: function(result) {
@@ -420,19 +422,22 @@ $(document).ready(function(){
 					// alert("something gone wrong, reloading the page may solve this.");
 				}
 				else if(result == "1t"){
+					result_copy = result;
 					document.getElementById('typing').innerHTML = '<div class="img_cont_msg" ><img src="{{ chat_to.details.profile_pic.url }}" class="rounded-circle user_img_msg"></div><div class="msg_cotainer" style="min-width:100px;">	typing...</div>';
 					}
 				else if(result == "0t"){
+					result_copy = result;
 					document.getElementById('typing').innerHTML = '';
 					}
 				else if(result.result==1 && append != result.id){
-
+					result_copy = result.result;
 					document.getElementById("typing").remove();
 					document.getElementById('msg_card_body').innerHTML += result.html;
 					document.getElementById('msg_card_body').innerHTML += '<div class="d-flex justify-content-start mb-4"  id="typing"></div>';
 					append = result.id;
 					pk = result.id;
-					window.location.href = '#'+result.id;
+					var element = document.getElementById("msg_card_body");
+					element.scrollTop = element.scrollHeight;
 					}},
             error: function(result){
 

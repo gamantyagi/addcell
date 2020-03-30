@@ -1,0 +1,52 @@
+{% load static %}
+
+<div class="card">
+    <div class="card-body"><a href='#' onclick="load_event_group('0','0')">Home</a>{% autoescape off %}{{path_directory}}{% endautoescape %}
+    <button class="btn btn-success" id="create-group-button" onclick="create_group_show()" style="float: right;"><i class="fa fa-plus"></i> Create new group folder</button>
+<div id="creategroup" style="float:right"><input id="creategroupinput"  placeholder="enter group name" name="create_group_name" type="text"><button  id="creategroupsubmit" onclick="create_group('{{pname}}', '{{pk}}')">Create</button>
+</div>
+    </div>
+  </div>
+<div class="cards-list" id="cardborder" style="width:100%;">
+{% for group in groups %}
+<div class="cardf {{group.pk}} col-sm-6 col-md-4 col-lg-3" onclick="load_event_group('{{group.pk}}','{{group.group_name}}')" style="display: inline-block;">
+  <div class="card_image " style="width:100%;"> <img src="{{group.thumbnail}}" /> </div>
+  <div class="card_title title-white">
+    <p>{{group.group_name}}</p>
+  </div>
+</div>
+  {% endfor %}
+</div>
+
+
+<div class="row features" id="event_box_cont" style="margin-top:1rem;">
+                {% for event in events_done %}
+
+                <div class="col-sm-12 col-md-6 col-lg-3">
+                <form class="col-sm-12 col-md-12 col-lg-12" >
+
+                <div  id="dibba"   style="margin-bottom: 2em; margin-left: 1em; ">
+
+                    <div class="box" id="box"   style="background-color: #f2f2f2;opacity: 1; border: 1px solid #e0ebeb;">
+                        <div class="image-box" style="width:100%;" ><img class="box-image img-responsive" src='{{ event.event_thumbnail.thumbnail.800x300 }}' style="width:inherit;">
+                            <span class="notify-badge">{{event.get_event_complete_display}}</span></div>
+                        <div class="text-left info-box"   >
+                            <div onclick="window.location.href='{{path}}/event/{{event.events.event_uen}}'" style="cursor:pointer;">
+                            <h3 class="text-center name" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{event.eventname}}</h3>
+                            <p class="description" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{event.breif_about}}</p>
+                            <p class="description">Date: {{event.heldon}}<br>fee: {{event.fee}}<br>Type: {{event.eventtype}}<br>Duty leave: {{event.dl}}</p>
+                            </div >
+                                 </div>
+                    </div>
+                </div>
+                </form></div>
+
+    {% endfor %}</div>
+
+
+
+
+<script>
+    $('#creategroup').hide();
+
+</script>

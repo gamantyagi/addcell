@@ -14,7 +14,11 @@ urlpatterns = [
     #path('update/bprofile/', views.ClubCell.update, name="Update"),
     path('club/eventtodo/<str:event_uen>', views.Club.event_todo_main, name="eventToDo"),
     path('club/eventtodo/', views.Club.events_todo, name="eventToDo"),
-    path('club/eventdone/', views.Club.event_done, name="eventToDo"),
+
+    path('club/eventdone/', views.Club.event_done, name="eventDone"),
+    path('club/eventdone/loadevent', Ajax.ClubLoadHtml.load_event_group, name="load event group"),
+    path('club/eventdone/createevent', Ajax.ClubLoadHtml.create_event_group, name="create event group"),
+
     path('club/members', views.Club.members, name="eventToDo"),
     path('club/posts', views.Club.posts, name="eventToDo"),
     path('club/addcells', views.Club.addcells, name="eventToDo"),
@@ -36,11 +40,11 @@ urlpatterns = [
     path('student/ajax/ajax_event_register', Ajax.Ajax.event_register, name="event register"),
     path('student/ajax/ajax_event_wishlist', Ajax.Ajax.event_wishlist, name="event wishlist"),
 
-    path('student/home/', views.Student.home, name='Events'),
-    path('student/profile/', views.Student.profile, name='user profile'),
+    path('student/home/', views.Student.home, name='student explore'),
+    path('student/profile/', views.Student.profile, name='student profile'),
         path('student/profile/load', Ajax.StudentLoadHtml.profile_load_event, name='user profile load'),
     path('student/explore/', views.Student.home, name='explore'),
-    path('student/posts/', views.Student.posts, name='explore'),
+    path('student/posts/', views.Student.posts, name='student posts'),
 
     path('event/askquery', student.Student.ask_event_query, name="ask event query"),
     path('event/dltquery', student.Student.dlt_event_query, name="dlt event query"),

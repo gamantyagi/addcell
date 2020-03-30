@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 
 from clubcell.models import events, clubcell, events, messages, typing_message, event_participants, posts, \
-    event_wishlist
+    event_wishlist, group_event, related_images
 from .General import General, GoTo
 from django.contrib.auth.models import User
 from .Constants import Paths, Pages, Alerts
@@ -124,10 +124,10 @@ class Club:
             user = request.user
             return GoTo.render_page(request, Pages.EVENTS_DONE, {'user': request.user,
                                                                  'alert_unseen': user.alerts.filter(seen=False).count,
-                                                                 'events_done': user.clubcell.events.filter(
-                                                                     event_complete='D'),
-                                                                 'messages': GetData.distinct_messages(
-                                                                     request)})
+                                                                 'events_done': user.clubcell.events.filter(event_complete='D'),
+                                                                 'messages': GetData.distinct_messages(request),
+                                                                 'groups': group_event.objects.filter(club=user.clubcell, parent_group=None),
+                                                                 'events_done': reversed(user.clubcell.events.filter(group_event=None))})
         return GoTo.landing_page()
 
     @staticmethod
@@ -227,6 +227,7 @@ class CommonMethod:
         event = events.objects.get(event_uen=event_uen)
         return GoTo.render_page(request, Pages.CLUB_EVENT_DETAIL, {'user': user,
                                                                    'event': event,
+                                                                   'event_images': related_images.objects.filter(event=event, type="collapse"),
                                                                    'event_registered': GetData.registered_event(user),
                                                                    'event_query': event.event_query.filter(replied=None)
                                                                    })
@@ -263,7 +264,7 @@ class Message:
         if request.user.is_authenticated and request.is_ajax():
             user = request.user
             gpk = request.POST['element']
-
+            result_copy = request.POST['result_copy']
             txt_len = int(request.POST['text'])
             chat_to_user = User.objects.get(username=chat_to)
             # now we will get if second user is typing or not and set if we are also typing

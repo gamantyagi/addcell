@@ -3,7 +3,8 @@ from django.template.loader import render_to_string
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-from clubcell.models import events, event_participants, details, team, members, event_query, messages, event_wishlist
+from clubcell.models import events, event_participants, details, team, members, event_query, messages, event_wishlist, \
+    group_event
 from django.http import HttpResponse
 import sys
 import csv
@@ -375,11 +376,11 @@ class ClubLoadHtml:
                                                   date_and_time=now)
 
                 html = render_to_string('ajax/msg_text_box.html', {'user': user,
-                                                                     'chat_to': chat_to_user,
-                                                                     'chats': new_msg,
-                                                                     'mend': 0,
-                                                                     'show_span': 0
-                                                                     },
+                                                                   'chat_to': chat_to_user,
+                                                                   'chats': new_msg,
+                                                                   'mend': 0,
+                                                                   'show_span': 0
+                                                                   },
                                         request=request)
                 return HttpResponse(html)
             return HttpResponse('')
@@ -418,11 +419,11 @@ class ClubLoadHtml:
                 return HttpResponse(json.dumps("%dt" % second_typing), content_type="application/json")
             elif last.pk != int(gpk) and int(gpk) < last.pk and last.user != user:
                 html = render_to_string('ajax/msg_text_box.html', {'user': user,
-                                                                     'chat_to': chat_to_user,
-                                                                     'chats': [last,],
-                                                                     'mend': 0,
-                                                                     'show_span': 0
-                                                                     },
+                                                                   'chat_to': chat_to_user,
+                                                                   'chats': [last, ],
+                                                                   'mend': 0,
+                                                                   'show_span': 0
+                                                                   },
                                         request=request)
                 dict_data = {'result': 1, 'html': html, 'id': last.pk}
                 return HttpResponse(json.dumps(dict_data), content_type="application/json")
@@ -431,6 +432,62 @@ class ClubLoadHtml:
                 return HttpResponse(json.dumps("-1"), content_type="application/json")
         else:
             return HttpResponse(json.dumps("unknown"), content_type="application/json")
+
+    @staticmethod
+    def load_event_group(request):
+        if request.user.is_authenticated and request.is_ajax() and request.method == "POST":
+            user = request.user
+            group_id = request.POST['group_id']
+            group_name = request.POST['group_name']
+            if group_id == '0' and group_name == '0':
+                groups = group_event.objects.filter(club=user.clubcell, parent_group=None)
+                group = None
+                path_directory = "/"
+                pk = pname = ''
+            else:
+                group = group_event.objects.get(club=user.clubcell, pk=int(group_id), group_name=group_name)
+                pk, pname = group.pk, group_name
+                groups = group_event.objects.filter(club=user.clubcell, parent_group=group)
+                temp_group = group
+                path_directory = ("<a href='#' onclick=\"load_event_group('%s','%s')\">/%s</a>" % (
+                temp_group.pk, temp_group.group_name, temp_group.group_name))
+                while 1:
+                    if temp_group.parent_group is None:
+                        break
+                    else:
+                        temp_group = temp_group.parent_group
+                        path_directory = ("<a href='#' onclick=\"load_event_group('%s','%s')\">/%s</a>" % (
+                        temp_group.pk, temp_group.group_name, temp_group.group_name)) + path_directory
+
+            html = render_to_string('ajax/groupevent.html', {'user': user,
+                                                             'path_directory': path_directory,
+                                                             'groups': groups,
+                                                             'pk': pk,
+                                                             'pname': pname,
+                                                             'events_done': reversed(
+                                                                 user.clubcell.events.filter(group_event=group))
+                                                             },
+                                    request=request)
+            return HttpResponse(html)
+
+    @staticmethod
+    def create_event_group(request):
+        if request.user.is_authenticated and request.is_ajax() and request.method == "POST":
+            user = request.user
+            parent_group = request.POST['parent_group']
+            group_name = request.POST['group_name']
+            if parent_group == '':
+                pevent = None
+            else:
+                pk = request.POST['pk']
+                pevent = group_event.objects.get(club=user.clubcell, pk=pk, group_name=parent_group)
+            new_group = group_event(club=user.clubcell, group_name=group_name, parent_group=pevent)
+            new_group.save()
+            html = render_to_string('ajax/single_group.html', {'user': user,
+                                                               'group': new_group,
+                                                               },
+                                    request=request)
+            return HttpResponse(html)
 
 
 class StudentLoadHtml:
