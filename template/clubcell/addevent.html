@@ -1,13 +1,27 @@
 {% extends 'clubcell/base2.html' %}
 {% load static %}
 {% block content %}
+
+<style>
+    .hashtag{
+    height:38px;
+    margin: 0 0;
+    border: none !important;
+    background-color: #2ab823;
+    text-transform: uppercase;
+    cursor: none;
+    pointer-events: none;
+    color: white;
+    }
+</style>
+
 <div >
 <div class="card" style="max-width:850px; margin:auto; box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);">
         <center style="color:black;"><H1><u>Create New Event</u></H1></center>
 
     <div class="card-body">
         <div class="container mt-3">
-              <form method="post" action="{{path}}/club/addevent/add/" >
+              <div id="mainForm"> {# method="post" action="{{path}}/club/addevent/add/" > #}
                               {% csrf_token %}
             <div class="input-group mb-3">
               <div class="input-group-prepend">
@@ -15,25 +29,9 @@
               </div>
               <input type="text" class="form-control" name="eventname" placeholder="event display name" style="max-width:50%;">
                 <div class="input-group-prepend">
-                <span class="input-group-text" style="left: 10px; bottom: 10px;">Season</span>
+                    <span class="input-group-text" style="left: 10px; bottom: 10px;">Category</span>
               </div>
-              <input type="number" class="form-control" name="season"  placeholder="Season" value="01" style="max-width:30%;">
-
-            </div>
-
-                  <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text" style="left: 10px; bottom: 10px;">Enter EUN</span>
-              </div>
-              <input type="text" class="form-control" maxlength="20" id="EUNS1" name="event_UAP"  placeholder="event unique name" style="max-width:100%; text-transform: uppercase;">
-
-            </div>
-
-                  <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text" style="left: 10px; bottom: 10px;">Category</span>
-              </div>
-                      <div  class="form-control"  style="background-color: #ffffff; position: relative; min-width: 43%; max-width:43%;">
+                <div  class="form-control"  style="background-color: #ffffff; position: relative; min-width: 30%; max-width:43%;">
                           <select name="cat" style="width: 100%;">
                               <option value="CP">Competetion</option>
                               <option value="CV">Concert</option>
@@ -41,14 +39,35 @@
                             </select>
 
                       </div>
+            </div>
 
-                      <div class="input-group-prepend">
-                <span class="input-group-text" style="left: 10px; bottom: 10px;">Held on</span>
+                  <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" style="left: 10px; bottom: 10px;">Enter EUN</span>
               </div>
-                      <input type="datetime-local"  name="heldon" class="form-control" style="max-width:43%;">
+              <input type="text" class="form-control" maxlength="29" id="EUNS1" name="event_UAP"  placeholder="event unique name" style="max-width:100%; text-transform: uppercase;">
+
+            </div>
+
+                  <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" style="left: 10px; bottom: 10px;">Event Days</span>
+              </div>
+              <input type="number" class="form-control" value="1" id="Event_days" name="event_day"  placeholder="Number of days event will go on." style="max-width:31%;">
+
+                  <div class="input-group-prepend">
+                      <span class="input-group-text" style="left: 10px; bottom: 10px;">Day 1</span>
+              </div>
+                      <input type="datetime-local" Value = "{% now 'Y-m-d\TG:i' %}"   name="heldon" class="form-control" style="max-width:43%;">
+                      </div>
+
+
+                <div id="dayadder" style="max-height:150px; overflow:auto;">
                 </div>
 
-          <div class="input-group mb-3">
+
+
+          <div class="input-group mb-3" style="margin-top:5px;">
           <div class="input-group-prepend">
 
                                 <span class="input-group-text" style="left: 10px; bottom: 10px;">
@@ -104,19 +123,97 @@
                   <div class="input-group mb-4">
                   <div class="input-group-prepend">
 
-                                        <span class="input-group-text" style="left: 10px; bottom: 10px; height:100%;">
+                                        <span class="input-group-text" style="left: 10px; bottom: 10px;">
 
-                                            &nbsp; Tags</span>
+                                            &nbsp; Tags </span> <span id="tag_show" style="height:100%;margin: 0 0;">
+                  </span>
                   </div>
-                      <textarea rows="2" name="tags_info"   class="form-control" id="taginput" maxlength="100"  placeholder="relative tags that represent your event (#tag1, #tag2)"></textarea>
+                      <input type="text" name="tags_info"   class="form-control" id="taginput" maxlength="100"  placeholder="relative 5 tags that represent your event">
                 </div>
-                <br><br><center>
+
+                  <div id="register_form">
+                      <span style="margin-left:10px;font-size:24px;"><u>Select input data required from user to register:</u></span><br>
+                      <span style="margin-left:10px;">Inbuilt inputs</span>
+                      <div id="inbuiltInputs" class="row" style="margin-left:20px; max-height:200px; overflow:auto; border: solid 1px;">
+                          {% for inp in inbuilt_inputs %}
+                            <div class="form-check col-4" data-toggle="tooltip" title="Hint: {{inp.input_reference}}, Type: {{inp.get_input_type_display}}, Entry: {{inp.required|yesno:'required,optional'}}">
+                              <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input inbuiltInputSelection" value="{{inp.input_name}}"  name="{{inp.pk}}">{{inp.input_name}}
+                              </label>
+                            </div>
+                          {% endfor %}
+                      </div><br>
+
+                      <span style="margin-left:10px;">Club custom inputs</span>
+                      <div id="customInputsClub" class="row" style="margin-left:20px; max-height:200px; overflow:auto; border: solid 1px;">
+                          {% for inp in custom_inputs %}
+                            <div class="form-check col-4" data-toggle="tooltip" title="Hint: {{inp.input_reference}}, Type: {{inp.get_input_type_display}}, Entry: {{inp.required|yesno:'required,optional'}}">
+                              <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input inbuiltInputSelection" value="{{inp.input_name}}" name="{{inp.pk}}">{{inp.input_name}}
+                              </label>
+                            </div>
+                            {% empty %}
+                                <b>No Custom inputs created yet in your club.</b>
+                          {% endfor %}
+                      </div>
+                      <div id="createCustom">
+                          <hr style="width:100%;">
+
+
+                          {# use to create new custom input #}
+
+                          <form id="newCustom" class="out-border" style="z-index:3;position:fixed;background-color:white;top:15vh; left:47vw;">
+                              <button type="button" id="crossinput" class="showForm" style="float:right;background-color: Transparent;border:none;outline: none;"><i class="fa fa-times" aria-hidden="true"></i></button>
+                              <span ><label for="input_name" style="color:black;">Input name: </label><input type="text" id="input_name" name="input_name" placeholder="Last Name" ></span><br>
+                              <span ><label for="inputHint" style="color:black;">Input Hint: </label><input type="text" id="inputHint" name="input_hint" placeholder="Enter you Last Name."></span><br>
+                              <span><label for="input_type" style="color:black;">Input Type: </label>
+                                                    <select id="input_type" name="input_type" >
+                                                      <option value="T">Text</option>
+                                                      <option value="I">Number</option>
+                                                      <option value="TEL">Phone Number</option>
+                                                      <option value="EMAIL">Email</option>
+                                                      <option value="C">Choice</option>
+                                                      <option value="RADIO">Radio</option>
+                                                      <option value="MC">MultiChoice</option>
+
+                                                    </select></span>
+
+                             <br> <span ><label class="form-check-label" style="margin-top:10px;margin-left:20px;color:black;">
+                              <input id="input_req" type="checkbox" class="form-check-input"  ><font style="margin: auto auto;"> Required</font>
+                          </label></span><br>
+                        <span><label for="inputmax" style="color:black;">Max Length: </label><input type="Number" id="inputmax" name="input_max" placeholder="Maximun length of input" ></span><br>
+                        <span ><label for="inputopt" style="color:black;">Input Option: </label><input type="text" id="inputopt" name="input_opt" placeholder="option1;option2;option3" ></span><br>
+                                  <span ><label for="input_scope" style="color:black;">Input Scope: </label>
+                                                    <select id="input_scope" name="input_scope" >
+                                                      <option value="club">Whole Club</option>
+                                                      <option value="event">This event only</option>
+
+                                                    </select></span><br>
+                                    <br>
+                              <center><input type="reset" id="addCinput" onclick="" value="+ Create" style="background-color:#edf0f0;" ></center>
+
+                          </form>
+                          <div style="float:right;margin-top:20px;">
+                      <input type="button" id="addinput" class="btn-info showForm" onclick="" value="+ Create custom input"  >
+                      <input type="button" class="btn-info" id="previewForm" onclick="" value="Registration form preview"  >
+                          </div>
+                      </div>
+
+                  </div>
+
+
+                <br><br><br><center>
                 <button type="Submit" class="btn btn-primary btn-lg">Add event</button>
               </center>
-          </form>
+          </div>
         </div>
 
   </div>
+
+
+
+
+
 </div>
 </div>
 
@@ -134,6 +231,7 @@ background-color: white;
 
 <script>
 $("#fees").hide();
+$("#newCustom").hide();
 $(document).ready(function(){
             $(".field-wrapper .field-placeholder").on("click", function () {
                 $(this).closest(".field-wrapper").find("input").focus();
@@ -152,49 +250,53 @@ $("#EUNS1").on("keypress", function(e) {
         e.preventDefault();
 });
 
+var tn = 0;
 
-  function addFormatter (input, formatFn) {
-  let oldValue = input.value;
+$("#taginput").keydown(function(e){
+    if ((e.which == 32 || e.which == 13) && tn<5 ){
+                var t = document.getElementById('taginput').value;
+                if (t === "" || t === " " || t.length > 20){
+                    e.preventDefault();
+                    document.getElementById('taginput').value = '';
+                    document.getElementById('taginput').placeholder = 5-tn + ' tags remaining , 20 character limit.';
+                }
+                else{
+                tn += 1;
+                document.getElementById('taginput').placeholder = 5-tn + ' tags remaining';
+                e.preventDefault();
+                document.getElementById('taginput').value='';
+                document.getElementById('tag_show').innerHTML += ' <button id="hashtag'+tn+'"  class="hashtag ">'+t+'</button>';
+                }
 
-  const handleInput = event => {
-    const result = formatFn(input.value, oldValue, event);
-    if (typeof result === 'string') {
-      input.value = result;
+     }
+
+    else if(e.which == 8){
+        var t = document.getElementById('taginput').value;
+        if (t == ""){
+        e.preventDefault();
+        document.getElementById('taginput').value = document.getElementById('hashtag'+tn).innerHTML;
+        $("#hashtag"+tn).remove();
+        tn -= 1;
+        document.getElementById('taginput').placeholder = 5-tn + ' tags remaining';
+
+        }
     }
+    else if(5-tn <= 0){
+    tn = 5;
+    document.getElementById('taginput').placeholder = "Tags added successfully";
+    e.preventDefault();
+    }
+});
 
-    oldValue = input.value;
-  }
-
-  handleInput();
-  input.addEventListener("input", handleInput);
-}
-
-// Example implementation
-// HOF returning regex prefix formatter
-function regexPrefix (regex, prefix) {
-  return (newValue, oldValue) => regex.test(newValue) ? newValue : (newValue ? oldValue : prefix);
-}
-document.getElementById("EUNS1").onclick = function() {runcons(),pointatstart()};
-function runcons(){
-// Apply formatter
-const input = document.getElementById("EUNS1");
-addFormatter(input, regexPrefix(/_S01$/, '_S01'));
-}
-
-function pointatstart(){
- var txtarea = document.getElementById("EUNS1");
- var v = txtarea.value;
- var l = v.length;
- txtarea.selectionEnd= l-4;
-}
-
+//toggle input add div
+$(".showForm").click(function () {
+        $("#newCustom").toggle();
+    });
 
 });
 
 
 </script>
-
-<script src="https://raw.githubusercontent.com/sujeet100/ngHashtags/master/ngHashtags.js"></script>
 
 <script>
     document.getElementById('fee').disabled = true;
@@ -213,6 +315,90 @@ function pointatstart(){
   }
 
 }
+
+$('body').on('keydown', 'input, select', function(e) {
+    if (e.key === "Enter") {
+        var self = $(this), form = self.parents('form:eq(0)'), focusable, next;
+        focusable = form.find('input,a,select,button,textarea').filter(':visible');
+        next = focusable.eq(focusable.index(this)+1);
+        if (next.length) {
+            next.focus();
+        } else {
+            form.submit();
+        }
+        return false;
+    }
+});
+</script>
+
+
+<script>
+var adder1 = '<div style="display:inline-block;width:47%;" ><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" style="left: 10px; bottom: 10px;">Day ';
+var adder2 = '</span></div><input type="datetime-local" name="heldon" class="form-control" style="max-width:100%;"></div></div>';
+$(document).ready(function(){
+  $("#Event_days").change(function(){
+    var days = document.getElementById('Event_days').value;
+    if (days < 1 || days> 30){
+    alert("Number of days should at least be 1 and at most 30");
+    document.getElementById('Event_days').value=1;
+    document.getElementById('dayadder').innerHTML = '';
+    }
+    else{
+    var i;
+    document.getElementById('dayadder').innerHTML = '';
+    for(i=2; i<=days; i++){
+        document.getElementById('dayadder').innerHTML += adder1 + i + adder2;
+        }
+    }
+  });
+});
+
+
+
+</script>
+
+
+<script>
+    $("#addCinput").click(function () {
+        var iname = document.getElementById("input_name").value;
+        var ihint = document.getElementById("inputHint").value;
+        var itype = document.getElementById("input_type").value;
+        var ireq = document.getElementById("input_req").checked;
+        var imaxlen = document.getElementById("inputmax").value;
+        var ioption = document.getElementById("inputopt").value;
+        var iscope = document.getElementById("input_scope").value;
+        $.ajax({
+            type: "POST",
+            url: "{% url 'add custom input' %}",
+            data: {'uen': "{{event.event_uen}}",
+                    'name': iname,
+                    'hint': ihint,
+                    'type': itype,
+                    'req': ireq,
+                    'max': imaxlen,
+                    'opt': ioption,
+                    'scope': iscope,
+             'csrfmiddlewaretoken': '{{ csrf_token }}'},
+            success : function(data) {
+                 $('#customInputsClub').html(data);
+             }
+                });
+    });
+</script>
+
+<script>
+    {# this funtion is for registration form preview #}
+    $("#previewForm").click(function () {
+        var inbuilt_inputs = document.getElementsByClassName('inbuiltInputSelection');
+        var inbuilt_url = "?";
+        for(var i=1; i< inbuilt_inputs.length ; ++i){
+            if(inbuilt_inputs[i].checked == true){
+                 inbuilt_url += inbuilt_inputs[i].name+"="+inbuilt_inputs[i].value + "&";
+                 }
+        }
+     window.open("{% url 'preview register form' %}"+inbuilt_url,'popUpWindow','height=600,width=500,left=10,top=10,,,menubar=no');
+
+    });
 </script>
 
 {% endblock %}

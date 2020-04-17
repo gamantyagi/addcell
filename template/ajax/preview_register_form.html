@@ -28,8 +28,8 @@ background: white;
 
 <div class="mx-0 container ">
     <div>
-        <h2><u>Registration for {{event.eventname}}</u></h2>
-        <form method="post" action="{% url 'submit register event' event_uen=event.event_uen %}">
+        <h2><u>Registration Demo Form</u></h2>
+        <form>
         {% csrf_token %}
             {% for input, value in inputs %}
 

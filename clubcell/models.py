@@ -112,7 +112,7 @@ class typing_message(models.Model):
 
 class alerts(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='alerts')
-    second_user = models.ForeignKey(User, related_name='alert_second_user', on_delete=models.CASCADE, default=None)
+    second_user = models.ForeignKey(User, related_name='alert_second_user', on_delete=models.CASCADE, default=None, null=True)
     subject = models.CharField(max_length=120)
     date_and_time = models.DateTimeField(default=django.utils.timezone.now)
     alerts_in = models.CharField(max_length=1000)
@@ -242,12 +242,24 @@ class events(models.Model):
     paid = models.BooleanField(default=False)
     fee = models.IntegerField(default=0)
     certificate = models.BooleanField(default=False)
+
+    certificate_detail = models.CharField(max_length=250, default='')
+    dl_detail = models.CharField(max_length=250, default='')
+
     privacy = models.CharField(max_length=2, choices=PRIVACY, default=PUBLIC)
     registration = models.BooleanField(default=True)
     dl = models.BooleanField(default=False)
     custom_inputs = models.ManyToManyField('custom_input', blank=True, default=None)
     event_complete = models.CharField(max_length=1, choices=EVENT_SITUATION_CHOICE, default=PENDING)
     event_thumbnail = VersatileImageField(upload_to="events/thumbnail", default="event.jpg")
+    view = models.IntegerField(default=0)
+
+    cash_accept = models.BooleanField(default=True)
+    paytm_accept = models.BooleanField(default=False)
+    upi_accept = models.BooleanField(default=False)
+
+    cash_receivers = models.ManyToManyField(User, blank=True, default=None)
+
     objects = models.Manager()
 
     def __str__(self):
@@ -267,7 +279,13 @@ class events(models.Model):
                 show = '{} days to go'.format(days)
         else:
             show = 'event day, wish you best...'
+        if days < 0:
+            show = 'Event is going on...'
         return [show, days, hours, int(minutes), int(seconds)]
+
+    def get_view(self):
+        self.view += 1
+        self.save()
 
 
 class related_images(models.Model):
@@ -282,6 +300,8 @@ class event_participants(models.Model):
     club = models.ForeignKey(clubcell, on_delete=models.CASCADE)
     events = models.ForeignKey(events, on_delete=models.CASCADE, related_name='event_participants')
     present = models.BooleanField(default=False)  # attendance of that event
+    payment_method = models.CharField(max_length=50, default="Cash")
+    cash_acceptor = models.ForeignKey(User, on_delete=models.SET_NULL, default=None, null=True, related_name='cash_requests')
     payment_done = models.BooleanField(default=False)
     payment_status = models.CharField(max_length=120, default='null')
     personal_info_access = models.CharField(max_length=1000, default="all,")
@@ -333,15 +353,23 @@ class custom_input(models.Model):
     INTEGER = 'I'
     CHOICE = 'C'
     MULTIPLE_CHOICE = 'MC'
+    EMAIL = 'EMAIL'
+    RADIO = 'RADIO'
+    TEL = 'TEL'
     TYPE = [
         (TEXT, 'Text'),
-        (INTEGER, 'Integer'),
+        (INTEGER, 'Number'),
         (CHOICE, 'Choice'),
+        (EMAIL, 'Email'),
+        (RADIO, 'Radio'),
+        (TEL, 'Tel'),
         (MULTIPLE_CHOICE, 'Multiple Choice')
     ]
+    club = models.ForeignKey(clubcell, on_delete=models.CASCADE, blank=True, default=None, null=True)
+    event = models.ForeignKey(events, blank=True, default=None, null=True, on_delete=models.CASCADE)
     input_name = models.CharField(max_length=50)
     input_reference = models.CharField(max_length=200)
-    input_type = models.CharField(max_length=3, choices=TYPE, default=TEXT)
+    input_type = models.CharField(max_length=20, choices=TYPE, default=TEXT)
     max_length = models.IntegerField(default=50)
     choice_option = models.CharField(max_length=2000, default=None, blank=True, null=True)
     required = models.BooleanField(default=False)
@@ -349,10 +377,13 @@ class custom_input(models.Model):
     def __str__(self):
         return self.input_name + "------" + self.input_type
 
+    def get_choice_option_list(self):
+        return str(self.choice_option).split(';')
+
 
 class custom_input_value(models.Model):
     input = models.ForeignKey(custom_input, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='custom_input_value')
     value = models.CharField(max_length=500)
 
     def __str__(self):
@@ -376,17 +407,23 @@ class posts(models.Model):
     video = models.FileField(upload_to='posts/videos', blank=True)
     text = models.CharField(max_length=200, blank=True)
     time = models.DateTimeField(default=django.utils.timezone.now)
+    views = models.IntegerField(default=0)
+
+    def get_views(self):
+        self.views += 1
+        self.save()
+        return self.views
 
 
 class like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    post_liked = models.ForeignKey(posts, models.CASCADE)
+    post_liked = models.ForeignKey(posts, models.CASCADE, related_name='like')
     time = models.DateTimeField(default=django.utils.timezone.now)
 
 
 class comments(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    post_commented = models.ForeignKey(posts, on_delete=models.CASCADE)
+    post_commented = models.ForeignKey(posts, on_delete=models.CASCADE, related_name='comments')
     comment = models.CharField(max_length=200)
     visible = models.BooleanField(default=True)
     time = models.DateTimeField(default=django.utils.timezone.now)

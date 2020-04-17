@@ -12,6 +12,19 @@
     padding:5px 10px;
     font-size:20px;
 }
+.comment::-webkit-scrollbar { width: 0 !important }
+.img_cont_msg{
+			height: 30px;
+			width: 30px;
+
+	}
+	.user_img_msg{
+			height: 30px;
+			width: 30px;
+			border:1.5px solid #f5f6fa;
+
+
+		}
 </style>
 
 <div class="features-boxed">
@@ -20,11 +33,75 @@
             <div class="intro" style="max-width: 892px;">
                     <h1 class="text-center">Welcome {{user.first_name}} {{user.last_name}}</h1>
             </div></center>
-            <div class="filtr-controls"><span  data-filter="all" onclick="window.location.href='{{path}}/student/profile'">Your Profile</span>
+            <div class="filtr-controls" style="user-select: none;"><span  data-filter="all" onclick="window.location.href='{{path}}/student/profile'">Your Profile</span>
                 <span  data-filter="1" onclick="window.location.href='{{path}}/student/explore'">Explore</span>
 <!--                <span data-filter="2">Recommended</span>-->
-                <span class="active" data-filter="3" onclick="window.location.href='{{path}}/student/posts'">Posts</span>
+                <span class="active" data-filter="3" onclick="window.location.href='{{path}}/student/posts'">Posts</span></div>
 <!--                <span data-filter="3">Trending</span><span data-filter="3">Top list</span></div>-->
+
+                                <hr width="100%">
+                <div id="postContainer" class="container">
+
+                {% for post in posts %}
+
+                    <div style="max-height:1400px; margin: 0 auto;margin-top:20px;overflow:hidden;width:100%;">
+                        <div class="col-12" style="float:left; display:block;line-height:0px;">
+                            <hr style="width:100%;">
+                            <b> <span class="img_cont_msg" >
+                                <img src="{{ post.club.user.details.profile_pic.thumbnail.40x40 }}" class="rounded-circle user_img_msg" style="display: inline-block;">
+                                <span>{{post.club.clubname}}</span>
+								</span>
+                                </b>
+                            <hr style="width:100%;">
+                        </div><br>
+
+
+                        <div class="col-lg-8 col-md-12 col-sm-12" style="display:inline-block;" >
+                            <img src="{{post.image.url}}" style="width:inherit;">
+                        </div>
+                        <div class="d-none d-sm-none d-md-none d-lg-inline-block  col-lg-4 right row" style="display:inline-block;bottom: 10px; height:100% !important;box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);">
+                           <span>12 Comments</span>
+                            <div class="comment"   style="max-height:110px;overflow:auto;">
+
+                                <b style="color:skyblue;">@gamantyagi</b> very nice picture brother <br>
+                                Commnts demo 2<br>
+                                Commnts demo 3<br>
+                                Commnts demo 4<br>
+                                Commnts demo 5<br>
+                                Commnts demo 6<br>
+                                Commnts demo <br>
+                                Commnts demo <br>
+                                Commnts demo 435<br>
+                                Commnts demo w<br>
+                                Commnts demokj <br>
+                                Commnts demol <br>
+                                Commnts demo kl<br>
+                                Commnts demo s<br>
+                                Commnts demox <br>
+                                Commnts demo c<br>
+                                Commnts demoq <br>
+                            </div>
+
+                            <div class="row" style=" ">
+                                    <input class="left" type="text" name="postComment" placeholder="Add comment">
+                                <button  style="float:right;">comment</button>
+                            </div>
+                        </div>
+
+                    <div class="col-lg-8 col-md-12 col-sm-12" style="font-color:blue;">
+                        <span  style="font-size:0.5rem;">{{post.get_views}} Views• {{ post.like.all.count}} people liked• {{ post.comments.all.count}} comments</span><br>
+                        <div  style="border-style: solid;">
+                        <button style="width:49%;">Like</button>
+                        <button style="width:49%; float:right;">Comment</button></div>
+                    </div>
+
+                    </div>
+
+                {% endfor %}
+                </div>
+
+
+
 
 
         </div>

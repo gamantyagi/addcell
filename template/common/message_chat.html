@@ -240,7 +240,7 @@
 	}
 
 	::-webkit-scrollbar {
-    width: 12px;
+    width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -286,7 +286,7 @@
 }
 </script>
 
-	<body>
+	<body style="font-family:times, times new roman, serif;">
 		<div class="container-fluid h-100">
 			<div class="row justify-content-center h-100">
 				<div class="chat" style="height:100%; width:100%; max-width:900px;min-width:400px;">
@@ -320,26 +320,27 @@
 						<div class="card-body msg_card_body" id="msg_card_body">
 
 							{% for message in chats %}
+							{% ifchanged message.get_time.1 %}<p><center><div style=" text-align:center;display: inline-block;font-size:0.6rem;box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);">{{message.get_time.1}}</div></center></p>{% endifchanged %}
 							{% if message.user == chat_to %}
 							<div class="d-flex justify-content-start mb-4"  id="{{message.pk}}">
 								<div class="img_cont_msg" >
 									<img src="{{ chat_to.details.profile_pic.thumbnail.30x30 }}" class="rounded-circle user_img_msg">
 								</div>
 								<div class="msg_cotainer" style="min-width:150px;">
-									{{message.message_in}}
+									{{message.message_in|urlizetrunc:15}}
 
 									{% if message.event != None %}
 									<br> <font color="black" style="float:right;line-height: 0.4;font-size:7px;">#{{message.event.event_uen}}</font>{% endif %}
-									<span class="msg_time" >{{message.get_time.0}} | {{message.get_time.1}}</span>
+									<span class="msg_time" >{{message.get_time.0}}</span>
 								</div>
 							</div>
 							{% elif message.user == user %}
 							<div class="d-flex justify-content-end mb-4" id="{{message.pk}}">
 								<div class="msg_cotainer_send" style="min-width:150px;display: inline-block;">
-									{{message.message_in}}
+									{{message.message_in|urlizetrunc:15}}
 									{% if message.event != None %}
 									<br> <font color="black" style="float:right;line-height: 0.4;font-size:7px;">#{{message.event.event_uen}}</font>{% endif %}
-									<div style="display: inline-block;" class="msg_time_send">{{message.get_time.0}} | {{message.get_time.1}}</div>
+									<div style="display: inline-block;" class="msg_time_send">{{message.get_time.0}}</div>
 
 								</div>
 

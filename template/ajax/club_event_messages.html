@@ -139,6 +139,7 @@ img{ max-width:100%;}
 
 
 <script>
+    var chat_again = 0; // to make not to load same chat again when scroll top
    var get_new_message;
   var active_user='';
   function load_chat(user,id){
@@ -165,16 +166,18 @@ img{ max-width:100%;}
 
              }
                 });
+                 chat_again = 0;
                             }
 
   function post_chat(){
-        console.log(active_user);
+        var msg_text = document.getElementById("msg_input_box").value;
+        document.getElementById("msg_input_box").value=''
         $.ajax({
             type: "POST",
             url: "{% url 'post new msg club' %}",
             data: {'second_user': active_user,
                     'event_to': "{{uen}}",
-                    'message': document.getElementById("msg_input_box").value,
+                    'message': msg_text,
              'csrfmiddlewaretoken': '{{ csrf_token }}'},
             success : function(data) {
                  $('#typing').remove();
@@ -182,7 +185,6 @@ img{ max-width:100%;}
 				document.getElementById('msg_history_box').innerHTML += '<div class="incoming_msg"  id="typing"></div>';
 				var element = document.getElementById("msg_history_box");
 				element.scrollTop = element.scrollHeight;
-                 document.getElementById("msg_input_box").value='';
 
 
              }
@@ -214,7 +216,7 @@ img{ max-width:100%;}
 
             {% for message in messages.messages %}
 
-            <div class="chat_list"  id="msg{{message.pk}}" style="text-overflow: ellipsis;overflow:hidden;height:5.4em;">
+            <div class="chat_list"  id="msg{{message.pk}}" style="text-overflow: ellipsis;overflow:hidden;height:5.4em; cursor:pointer;">
               <div class="chat_people" >
                 {% if message.user == user %}
                 <div onclick="load_chat('{{message.second_user.username}}','{{message.pk}}')">

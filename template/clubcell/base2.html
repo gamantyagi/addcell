@@ -10,6 +10,15 @@
 
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
 
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
+<link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
+<link rel="manifest" href="{% static 'site.webmanifest' %}">
+<link rel="mask-icon" href="{% static 'safari-pinned-tab.svg' %}" color="#000000">
+<meta name="msapplication-TileColor" content="#000000">
+<meta name="theme-color" content="#000000">
 
     <link rel="stylesheet" href='{% static "assets/bootstrap/css/bootstrap.min.css"%}'>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
@@ -33,12 +42,30 @@
   font-size: 16px;
   width: 100%;
 }
+.out-border{
+    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+
+.loader {
+	width: 5rem;
+	height: 5rem;
+	border: 0.6rem solid #999;
+	border-bottom-color: transparent;
+	border-radius: 50%;
+	margin: 0 auto;
+	animation: loader 500ms linear infinite;
+}
+
+@keyframes loader {
+	to {
+		transform: rotate(360deg);
+	}
+}
 </style>
 
 
 </head>
 
-<body id="page-top" style="min-height: 100%;">
+<body id="page-top" style="min-height: 100vh;">
     <div id="wrapper" >
 
         <div style="visiblity:hidden">
@@ -49,6 +76,27 @@
          <div style="position:fixed; z-index:2;">
 
         <nav class="navbar navbar-dark text-monospace text-left align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 fixed" style="height:100vh; overflow: auto;">
+            <style>
+/* width */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #1258c7;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: grey;
+}
+</style>
             <div class="container-fluid d-flex flex-column p-0" >
                 <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
 
@@ -113,8 +161,8 @@
                                         role="menu">
                                         <h6 class="dropdown-header">alerts center</h6>
                                         <div style="max-height:450px; overflow:auto;">
-                                        {% for alert in user.alerts.all %}
-                                        <a class="d-flex align-items-center dropdown-item" href="#">
+                                        {% for alert in user.alerts.all reversed %}
+                                        <a class="d-flex align-items-center dropdown-item" data-toggle="tooltip" title="{{alert.subject}}:: from:{{alert.second_user.username}}" href="#">
                                             <div class="mr-3">
                                                 <div class="bg-warning icon-circle"><i class="fas fa-exclamation-triangle text-white"></i></div>
                                             </div>

@@ -1,9 +1,8 @@
 {% if mend != 0 %}
 <div id="temp_for_load{{mstart}}">
 <script>
-
+  chat_again = {{mstart}}
   function load_chat_again(){
-        $( "#load_more_msg" ).remove();
         var elem = document.getElementById('msg_history_box');
         var scroll_bar = elem.scrollHeight;
         $.ajax({
@@ -15,6 +14,7 @@
                     'uen': "all",
              'csrfmiddlewaretoken': '{{ csrf_token }}'},
             success : function(data) {
+                    $( "#load_more_msg" ).remove();
                  $('#msg_history_box').prepend(data);
                  $( "#temp_for_load{{mstart}}" ).remove();
                 elem.scrollTop = elem.scrollHeight - scroll_bar;
@@ -27,10 +27,22 @@
                 });
 
                             }
+
+        $(document).ready(function(){
+  $("div").scroll(function(){
+    var elem = document.getElementById('msg_history_box');
+    if (elem.scrollTop == 0){
+        if(chat_again == {{mstart}}){
+        chat_again = '';
+        load_chat_again();
+        }
+    }
+  });
+});
 </script>
 <div id="load_more_msg"  >
 
-    <center> <button onclick="load_chat_again()">Click to load messages</button></center><br>
+    <center><div onclick="load_chat_again()" class="loader"></div></center><br>
 
 </div>
 </div>
@@ -90,7 +102,7 @@ try{
 clearInterval(get_new_message);
 }
 catch(err) {}
-get_new_message = setInterval(myFunction, 1000);
+get_new_message = setInterval(myFunction, 9000);
 });
 	</script>
 {% endif %}

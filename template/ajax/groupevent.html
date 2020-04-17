@@ -34,7 +34,7 @@
                             <div onclick="window.location.href='{{path}}/event/{{event.events.event_uen}}'" style="cursor:pointer;">
                             <h3 class="text-center name" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{event.eventname}}</h3>
                             <p class="description" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{event.breif_about}}</p>
-                            <p class="description">Date: {{event.heldon}}<br>fee: {{event.fee}}<br>Type: {{event.eventtype}}<br>Duty leave: {{event.dl}}</p>
+                            <p class="description">Date: {{event.heldon}}<br>fee: {{event.fee}}<br>Type: {{event.get_eventtype_display}}<br>Duty leave: {{event.dl|yesno}}</p>
                             </div >
                                  </div>
                     </div>

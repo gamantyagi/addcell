@@ -26,12 +26,14 @@ urlpatterns = [
     path('club/update/profile/', models.Club.update_profile, name="eventToDo"),
     path('club/update/cell/', models.Club.update_cell, name="eventToDo"),
     path('club/addevent/add/', models.Club.add_event_to_database, name="eventToDo"),
+    path('club/addevent/previewform/', Ajax.Club.preview_register_form, name="preview register form"),
 
     path('club/ajax/show_event_public/', Ajax.Ajax.show_event, name="eventToDo"),
     path('club/ajax/addmember', Ajax.Club.add_member, name="add member to club"),
     path('club/ajax/editteam', Ajax.Club.edit_team, name="add member to club"),
     path('club/ajax/dltteam', Ajax.Club.delete_team, name="add member to club"),
     path('club/ajax/addteam', Ajax.Club.add_team, name="add member to club"),
+    path('club/ajax/addinput', Ajax.Club.add_input, name="add custom input"),
     path('club/ajax/load/html/queries', Ajax.ClubLoadHtml.queries_and_alerts, name="load queries"),
     path('club/ajax/load/html/messages', Ajax.ClubLoadHtml.messages_and_queries, name="load messages"),
     path('club/ajax/load/html/chat', Ajax.ClubLoadHtml.one_to_one_chat, name="load chat"),
@@ -53,6 +55,8 @@ urlpatterns = [
     path('event/dltqueryc', Ajax.Club.dlt_event_query, name="dlt event query club"),
 
     path('event/<str:event_uen>/', views.CommonMethod.view_event_detail, name='event display'),
+    path('event/<str:event_uen>/register/', views.Student.event_register_form, name="event register form"),
+    path('event/<str:event_uen>/register/submit', Ajax.Student.submit_register_form, name="submit register event"),
     path('messages/chat/<str:chat_to>/', views.Message.chat, name='check'),
     path('messages/get_new/<str:chat_to>/', views.Message.get_new_message, name='check'),
     path('messages/post_new', views.Message.post_new_message, name='post new msg'),

@@ -75,7 +75,7 @@
 <div class="cards-list" id="cardborder" style="width:100%;">
 {% for group in groups %}
 <div class="cardf {{group.pk}} col-sm-6 col-md-4 col-lg-3" onclick="load_event_group('{{group.pk}}','{{group.group_name}}')" style="display: inline-block;">
-  <div class="card_image " style="width:100%;"> <img src="{{group.thumbnail}}" /> </div>
+  <div class="card_image " style="width:100%;"> <img src="{{group.thumbnail}}" style="box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);"/> </div>
   <div class="card_title title-white">
     <p>{{group.group_name}}</p>
   </div>
@@ -89,7 +89,7 @@
                 <div class="col-sm-12 col-md-6 col-lg-3"  data-toggle="tooltip" title="{{event.eventname}}:: {{event.breif_about}}">
                 <form class="col-sm-12 col-md-12 col-lg-12" >
 
-                <div  id="dibba"   style="margin-bottom: 2em; margin-left: 1em; ">
+                <div  id="dibba"   style="margin-bottom: 2em; margin-left: 1em; box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);">
 
                     <div class="box" id="box"   style="background-color: #f2f2f2;opacity: 1; border: 1px solid #e0ebeb;">
                         <div class="image-box" style="width:100%;" ><img class="box-image img-responsive" src='{{ event.event_thumbnail.thumbnail.800x300 }}' style="width:inherit;">
@@ -97,8 +97,8 @@
                         <div class="text-left info-box"   >
                             <div onclick="window.location.href='{{path}}/event/{{event.events.event_uen}}'" style="cursor:pointer;">
                             <h3 class="text-center name" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{event.eventname}}</h3>
-                            <p class="description" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{event.breif_about}}</p>
-                            <p class="description">Date: {{event.heldon}}<br>fee: {{event.fee}}<br>Type: {{event.eventtype}}<br>Duty leave: {{event.dl}}</p>
+                            <p class="description" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{event.breif_about}}|</p>
+                            <p class="description">Date: {{event.heldon}}<br>fee: {{event.fee}}<br>Type: {{event.get_eventtype_display}}<br>Duty leave: {{event.dl|yesno}}</p>
                             </div >
                                  </div>
                     </div>
@@ -133,6 +133,7 @@
   width: inherit;
   height: inherit;
   border-radius: 00px;
+
 }
 
 .cardf .card_image img {
@@ -150,6 +151,8 @@
   font-size: 30px;
   margin-top: -80px;
   height: 40px;
+   -webkit-text-stroke-width: 1px;
+   -webkit-text-stroke-color: black;
 }
 /*
 .cardf:hover {

@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User
 from django.utils import timezone
-
+from . import ajaxHTML
 from clubcell.models import events, event_participants, details, team, members, event_query, messages, event_wishlist, \
-    group_event
+    group_event, custom_input_value, alerts, custom_input
 from django.http import HttpResponse
 import sys
 import csv
@@ -13,6 +13,8 @@ from clubcell.ML import Logs
 from .Common import GetData
 from .Constants import Paths
 import os
+
+from .General import GoTo
 
 
 class Ajax:
@@ -61,10 +63,16 @@ class Ajax:
                 user = request.user
                 event = events.objects.get(event_id=event_id)
                 if event.registration and not event_participants.objects.filter(events=event, user=user).exists():
-                    register_member = event_participants(user=user, club=event.club, events=event)
-                    register_member.save()
-                    result = event.event_uen  # it it used to change html of desire button, ID of that element
-                    return HttpResponse(json.dumps(result), content_type="application/json")
+                    if event.paid:
+                        result = "show_form"
+                        return HttpResponse(
+                            json.dumps({'result': result, 'redirectTo': '/event/%s/register/' % event.event_uen}),
+                            content_type="application/json")
+                    else:
+                        register_member = event_participants(user=user, club=event.club, events=event)
+                        register_member.save()
+                        result = event.event_uen  # it it used to change html of desire button, ID of that element
+                        return HttpResponse(json.dumps(result), content_type="application/json")
                 elif event.registration and event_participants.objects.filter(events=event, user=user).exists():
                     result = "Already registered"
                     return HttpResponse(json.dumps(result), content_type="application/json")
@@ -77,8 +85,6 @@ class Ajax:
             except Exception as e:
                 print(e)
                 return HttpResponse(json.dumps("wrong"), content_type="application/json")
-        else:
-            return HttpResponse(json.dumps("Suspicious Activity by user"), content_type="application/json")
 
     @staticmethod
     def event_wishlist(request):
@@ -283,6 +289,107 @@ class Club:
                 target_query.delete()
             return HttpResponse({})
 
+    @staticmethod
+    def add_input(request):
+        if request.user.is_authenticated and request.method == "POST" and request.is_ajax():
+            user = request.user
+            event = request.POST['uen']
+            if event == '':
+                event = None
+            required = request.POST['req'].title()
+            new_inp = custom_input(club=user.clubcell, event=event, input_name=request.POST['name'],
+                                   input_reference=request.POST['hint'],
+                                   input_type=request.POST['type'], max_length=request.POST['max'],
+                                   choice_option=request.POST['opt'], required=required)
+            new_inp.save()
+            html = render_to_string("ajax/custom_inputs.html",
+                                    {'custom_inputs': custom_input.objects.filter(club=user.clubcell)
+                                     },
+                                    request=request)
+            return HttpResponse(html)
+
+    @staticmethod
+    def preview_register_form(request):
+        if request.user.is_authenticated and request.method == "GET":
+            user = request.user
+            inputs = []
+            for inp in request.GET:
+                try:
+                    input_ = custom_input.objects.get(pk=int(inp), input_name=request.GET[inp])
+                    if input_.club is not None and input_.club != user.clubcell:
+                        continue
+                    try:
+                        inputs.append([input_, user.custom_input_value.get(input=input_).value])
+                    except:
+                        inputs.append([input_, ""])
+                except:
+                    pass
+            return GoTo.render_page(request, "ajax/preview_register_form.html", {  # 'event': event,
+                                                                                 'inputs': inputs})
+
+
+class Student:
+
+    @staticmethod
+    def submit_register_form(request, event_uen):
+        if request.user.is_authenticated and request.method == "POST":
+            user = request.user
+            post_inp = dict(request.POST.items())
+            event = events.objects.get(event_uen=event_uen)
+            if not event_participants.objects.filter(events=event, user=user).exists():
+                non_required_input = event.custom_inputs.filter(required=False)
+                required_inputs = event.custom_inputs.filter(required=True)
+                req_inp = []
+                non_req_inp = []
+                for req in required_inputs:
+                    if post_inp[req.input_name]:
+                        req_inp.append(req)
+                    else:
+                        return HttpResponse('missing %s' % req.input_name)
+                for non_req in non_required_input:
+                    try:
+                        if post_inp[non_req.input_name]:
+                            non_req_inp.append(non_req)
+                    except:
+                        pass
+
+                for req in req_inp:
+                    if custom_input_value.objects.filter(input=req, user=user).exists():
+                        cus = custom_input_value.objects.get(input=req, user=user)
+                        cus.delete()
+                    cstm_inp = custom_input_value(input=req, user=user, value=post_inp[req.input_name])
+                    cstm_inp.save()
+                for non_req in non_required_input:
+                    if custom_input_value.objects.filter(input=non_req, user=user).exists():
+                        cus = custom_input_value.objects.get(input=non_req, user=user)
+                        cus.delete()
+                    cstm_inp = custom_input_value(input=non_req, user=user, value=post_inp[non_req.input_name])
+                    cstm_inp.save()
+                #  registration for user given cash
+                if post_inp['pay'] == '1':
+                    cash_acceptor = event.cash_receivers.get(username=post_inp['cash_receiver'])
+                    register_member = event_participants(user=user, club=event.club, events=event,
+                                                         payment_method='Cash',
+                                                         cash_acceptor=cash_acceptor,
+                                                         payment_status="waiting for accepting payment received request")
+                    register_member.save()
+                    msg = ' Request for accepting the cash, click on Accept button if you receives ₹{} from {}, Otherwise decline the request.'.format(
+                        event.fee, user.username)
+                    alert = alerts(user=event.club.user, second_user=user,
+                                   subject='₹%s deposited for %s' % (event.fee, event.event_uen), alerts_in=msg)
+                    alert.save()
+                    return HttpResponse(
+                        'Your registration form has been reveived, don\'t forget to remind {} to accept your registration request after you submit cash'.format(
+                            cash_acceptor.username))
+
+            else:
+                status = user.event_participants.get(events=event)
+                if status.payment_done:
+                    return HttpResponse("You already registered for this event, and verified.")
+                else:
+                    return HttpResponse(
+                        'You already registered for this event, but payment is not done #%s' % status.cash_acceptor)
+
 
 class ClubLoadHtml:
 
@@ -450,14 +557,14 @@ class ClubLoadHtml:
                 groups = group_event.objects.filter(club=user.clubcell, parent_group=group)
                 temp_group = group
                 path_directory = ("<a href='#' onclick=\"load_event_group('%s','%s')\">/%s</a>" % (
-                temp_group.pk, temp_group.group_name, temp_group.group_name))
+                    temp_group.pk, temp_group.group_name, temp_group.group_name))
                 while 1:
                     if temp_group.parent_group is None:
                         break
                     else:
                         temp_group = temp_group.parent_group
                         path_directory = ("<a href='#' onclick=\"load_event_group('%s','%s')\">/%s</a>" % (
-                        temp_group.pk, temp_group.group_name, temp_group.group_name)) + path_directory
+                            temp_group.pk, temp_group.group_name, temp_group.group_name)) + path_directory
 
             html = render_to_string('ajax/groupevent.html', {'user': user,
                                                              'path_directory': path_directory,

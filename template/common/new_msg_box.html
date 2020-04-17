@@ -5,7 +5,7 @@
 									<img src="{{ chat_to.details.profile_pic.thumbnail.30x30 }}" class="rounded-circle user_img_msg">
 								</div>
 								<div class="msg_cotainer" style="min-width:100px;">
-									{{message.message_in}}
+									{{message.message_in|urlizetrunc:15}}
 
 									{% if message.event != None %}
 									<br> <font color="black" style="float:right;line-height: 0.4;font-size:7px;">#{{message.event.event_uen}}</font>{% endif %}
@@ -15,7 +15,7 @@
 							{% elif message.user == user %}
 							<div class="d-flex justify-content-end mb-4" id="{{message.pk}}">
 								<div class="msg_cotainer_send" style="min-width:100px;">
-									{{message.message_in}}
+									{{message.message_in|urlizetrunc:15}}
 
 									{% if message.event != None %}
 									<br> <font color="black" style="float:right;line-height: 0.4;font-size:7px;">#{{message.event.event_uen}}</font>{% endif %}

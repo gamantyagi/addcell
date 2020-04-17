@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 
 from clubcell.models import events, clubcell, events, messages, typing_message, event_participants, posts, \
-    event_wishlist, group_event, related_images
+    event_wishlist, group_event, related_images, custom_input
 from .General import General, GoTo
 from django.contrib.auth.models import User
 from .Constants import Paths, Pages, Alerts
@@ -96,7 +96,12 @@ class Club:
 
     @staticmethod
     def add_event(request):
-        return GoTo.render_page(request, Pages.ClUB_ADD_EVENT, Rendering.render_data(request, "Club: Add Event"))
+        user = request.user
+        return GoTo.render_page(request, Pages.ClUB_ADD_EVENT, {'user': request.user,
+                                                                'alert_unseen': user.alerts.filter(seen=False).count,
+                                                                'messages': GetData.distinct_messages(request),
+                                                                'inbuilt_inputs': custom_input.objects.filter(club=None),
+                                                                'custom_inputs': custom_input.objects.filter(club=user.clubcell)})
 
     @staticmethod
     def event_todo_main(request, event_uen):
@@ -124,10 +129,13 @@ class Club:
             user = request.user
             return GoTo.render_page(request, Pages.EVENTS_DONE, {'user': request.user,
                                                                  'alert_unseen': user.alerts.filter(seen=False).count,
-                                                                 'events_done': user.clubcell.events.filter(event_complete='D'),
+                                                                 'events_done': user.clubcell.events.filter(
+                                                                     event_complete='D'),
                                                                  'messages': GetData.distinct_messages(request),
-                                                                 'groups': group_event.objects.filter(club=user.clubcell, parent_group=None),
-                                                                 'events_done': reversed(user.clubcell.events.filter(group_event=None))})
+                                                                 'groups': group_event.objects.filter(
+                                                                     club=user.clubcell, parent_group=None),
+                                                                 'events_done': reversed(
+                                                                     user.clubcell.events.filter(group_event=None))})
         return GoTo.landing_page()
 
     @staticmethod
@@ -218,6 +226,29 @@ class Student:
             return GoTo.render_page(request, Pages.STUDENT_POSTS, {'user': user,
                                                                    'posts': posts.objects.all()})
 
+    @staticmethod
+    def event_register_form(request, event_uen):
+        if request.method == "GET" and request.user.is_authenticated:
+            user = request.user
+            event = events.objects.get(event_uen=event_uen)
+            if event.registration and not event_participants.objects.filter(events=event, user=user).exists():
+                inputs = []
+                for inp in event.custom_inputs.all():
+                    try:
+                        inputs.append([inp, user.custom_input_value.get(input=inp).value])
+                    except:
+                        inputs.append([inp, ''])
+
+                return GoTo.render_page(request, "studentcell/register_event.html", {'event': event,
+                                                                                     'inputs': inputs})
+            else:
+                status = user.event_participants.get(events=event)
+                if status.payment_done:
+                    return HttpResponse("You already registered for this event, and verified.")
+                else:
+                    return HttpResponse(
+                        'You already registered for this event, but payment is not done #%s' % status.cash_acceptor)
+
 
 class CommonMethod:
 
@@ -227,7 +258,8 @@ class CommonMethod:
         event = events.objects.get(event_uen=event_uen)
         return GoTo.render_page(request, Pages.CLUB_EVENT_DETAIL, {'user': user,
                                                                    'event': event,
-                                                                   'event_images': related_images.objects.filter(event=event, type="collapse"),
+                                                                   'event_images': related_images.objects.filter(
+                                                                       event=event, type="collapse"),
                                                                    'event_registered': GetData.registered_event(user),
                                                                    'event_query': event.event_query.filter(replied=None)
                                                                    })
@@ -306,7 +338,8 @@ class Message:
                 except:
                     event = None
                 now = timezone.now()
-                new_msg = messages(user=user, second_user=chat_to_user, message_in=message_sent, date_and_time=now, event=event)
+                new_msg = messages(user=user, second_user=chat_to_user, message_in=message_sent, date_and_time=now,
+                                   event=event)
                 new_msg.save()
                 new_msg = messages.objects.get(user=user, second_user=chat_to_user, message_in=message_sent,
                                                date_and_time=now)

@@ -15,14 +15,14 @@
 }
 </style>
 
-<div class="features-boxed">
+<div class="features-boxed" >
         <div class="container">
             <center>
             <div class="intro" style="max-width: 892px;">
                 <h1 class="text-center">Welcome {{user.first_name}} {{user.last_name}}</h1>
 
             </div></center>
-            <div class="filtr-controls"><span  data-filter="all" onclick="window.location.href='{% url 'student profile' %}'">Your Profile</span>
+            <div class="filtr-controls" style="user-select: none;"><span  data-filter="all" onclick="window.location.href='{% url 'student profile' %}'">Your Profile</span>
                 <span class="active" data-filter="1" onclick="window.location.href='{% url 'student explore' %}'">Explore</span>
 
                 <span data-filter="3" onclick="window.location.href='{% url 'student posts' %}'">Posts</span></div>
@@ -32,21 +32,21 @@
                 {% for event in events_todo %}
 
                     {% if event.registration == True %}
-                <div class="col-sm-12 col-md-6 col-lg-4" data-toggle="tooltip" title="{{event.eventname}}:: {{event.breif_about}}">
+                <div class="col-sm-12 col-md-6 col-lg-4" data-toggle="tooltip" title="{{event.eventname}}:: {{event.breif_about}}" >
                 <form class="col-sm-12 col-md-12 col-lg-12" >
 
-                <div class=" item" id="dibba"   style="margin-bottom: 2em; margin-left: 1em; ">
+                <div class=" item" id="dibba"   style="margin-bottom: 2em; margin-left: 1em;box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12); ">
 
-                    <div class="box" id="box" onclick="window.location.href='{{path}}/event/{{event.event_uen}}'"   style="background-color: #f2f2f2;opacity: 1; border: 1px solid #e0ebeb;cursor:pointer;">
+                    <div class="box" id="box"    style="background-color: #f2f2f2;opacity: 1; border: 1px solid #e0ebeb;cursor:pointer;">
 
-                        <div class="image-box" style="width: 100%; height:200px; overflow:hidden;" >
+                        <div class="image-box" onclick="window.location.href='{{path}}/event/{{event.event_uen}}'" style="width: 100%; height:200px; overflow:hidden;" >
                             {% if event.paid == False %}<span class="notify-badge">free</span>{% endif %}
                             <img class="box-image img-responsive" src='{{ event.event_thumbnail.thumbnail.800x300 }}' style="width:inherit;height:inherit"></div>
                         <div class="text-left info-box"   >
-                            <div  style="cursor:pointer;">
+                            <div onclick="window.location.href='{{path}}/event/{{event.event_uen}}'"  style="cursor:pointer;">
                             <h3 class="text-center name" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{event.eventname}}</h3>
                             <p class="description" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{event.breif_about}}|</p>
-                            <p class="description">Date: {{event.heldon}}<br>fee: {{event.fee}}<br>Type: {{event.get_eventtype_display}}<br>Duty leave: {{event.dl}}</p>
+                            <p class="description">Date: {{event.heldon}}<br>fee: {{event.fee}}<br>Type: {{event.get_eventtype_display}}<br>Duty leave: {{event.dl|yesno:"Available,No,No"}}</p>
                             </div >
                                 {% if event in event_registered %}
                             <button type="button"   class="btn-outline-success" style="width:50%;background-color: #e6e600;border:#000000;color:#b32d00;" disabled>In ToDo</button><button type="button"  class="btn-outline-success"  style="width:50%;background-color: #e6e600;border: #b3b300;color:#b32d00;" disabled>Registered</button>
@@ -84,11 +84,16 @@ form:hover {
                 'csrfmiddlewaretoken': '{{ csrf_token }}'
             },
             success: function(result) {
+            console.log(result);
             if(result == "wrong"){
                alert("Something gone wrong");
             }
             else if(result == "closed"){
                alert("registration closed, not registered.");
+            }
+            else if(result.result == "show_form"){
+               window.open(result.redirectTo,'popUpWindow','height=600,width=500,left=10,top=10,,,menubar=no');
+               return false;
             }
             else if(result == "Already registered"){
                alert("Event already registered.");

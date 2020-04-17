@@ -17,7 +17,7 @@
 
 <script>
 	function load_events(to_load){
-        $('#event_box_cont').html("<div style='height:700px;'><centre>Loading, please wait...</centre></div>");
+        $('#event_box_cont').html("<centre style='height:700px;'><div class='loader'></div></centre>");
         $.ajax({
             type: "POST",
             url: "{% url 'user profile load' %}",
@@ -31,14 +31,14 @@
                             }
 </script>
 
-<div class="features-boxed">
+<div class="features-boxed" style="min-height:100vh;">
         <div class="container">
             <center>
             <div class="intro" style="max-width: 892px;">
                 <h1 class="text-center">Welcome {{user.first_name}} {{user.last_name}}</h1>
 
             </div></center>
-            <div class="filtr-controls"><span  data-filter="all" class="active" onclick="window.location.href='{{path}}/student/profile'">Your Profile</span>
+            <div class="filtr-controls" style="user-select: none;" ><span  data-filter="all" class="active" onclick="window.location.href='{{path}}/student/profile'">Your Profile</span>
                 <span data-filter="1" onclick="window.location.href='{{path}}/student/explore'">Explore</span>
 <!--                <span data-filter="2">Recommended</span>-->
                 <span data-filter="3" onclick="window.location.href='{{path}}/student/posts'">Posts</span></div>
@@ -52,14 +52,14 @@
                 <div class="col-sm-12 col-md-6 col-lg-4">
                 <form class="col-sm-12 col-md-12 col-lg-12" >
 
-                <div  id="dibba"   style="margin-bottom: 2em; margin-left: 1em; ">
+                <div  id="dibba"   style="margin-bottom: 2em; margin-left: 1em;box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12); ">
 
                     <div class="box" id="box"   style="background-color: #f2f2f2;opacity: 1; border: 1px solid #e0ebeb;">
                         <div class="image-box"  ><img class="box-image img-responsive" src='{% static ""%}event.jpg'>{% if event.events.paid == False %}<span class="notify-badge">free</span>{% endif %}</div>
                         <div class="text-left info-box"   >
                             <div onclick="window.location.href='{{path}}/event/{{event.events.event_uen}}'" style="cursor:pointer;">
                             <h3 class="text-center name" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{event.events.eventname}}</h3>
-                            <p class="description" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{event.events.breif_about}}</p>
+                            <p class="description" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{event.events.breif_about}}|</p>
                             <p class="description">Date: {{event.events.heldon}}<br>fee: {{event.events.fee}}<br>Type: {{event.events.eventtype}}<br>Duty leave: {{event.events.dl}}</p>
                             </div >
                                  </div>
