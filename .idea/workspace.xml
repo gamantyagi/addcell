@@ -2,38 +2,26 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="809fe728-186f-4cbe-9c91-f9376f2605ee" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/clubcell/caaa.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/clubcell/migrations/0074_auto_20200410_2315.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/template/ajax/custom_inputs.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/template/ajax/preview_register_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubcell/api/get/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubcell/api/get/views.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ve/addcell/bin/chardetect" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/addcell/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/addcell/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clubcell/Ajax.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/Ajax.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clubcell/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clubcell/ajaxHTML.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/ajaxHTML.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clubcell/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/addcell/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/addcell/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/clubcell/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clubcell/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/assets/css/register_form.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/assets/css/register_form.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/ajax/club_event_messages.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/ajax/club_event_messages.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/ajax/event_box.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/ajax/event_box.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/ajax/groupevent.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/ajax/groupevent.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/ajax/msg_text_box.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/ajax/msg_text_box.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/clubcell/addevent.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/clubcell/addevent.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/clubcell/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/clubcell/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/clubcell/base2.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/clubcell/base2.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/clubcell/base_up.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/clubcell/base_up.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/clubcell/dash.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/clubcell/dash.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/clubcell/event_done.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/clubcell/event_done.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/clubcell/event_show.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/clubcell/event_show.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/clubcell/event_todo_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/clubcell/event_todo_table.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/clubcell/events_todos.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/clubcell/events_todos.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/common/message_chat.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/common/message_chat.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/common/new_msg_box.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/common/new_msg_box.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/studentcell/register_event.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/studentcell/register_event.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/studentcell/shome.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/studentcell/shome.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/studentcell/sposts.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/studentcell/sposts.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/studentcell/sprofile.html" beforeDir="false" afterPath="$PROJECT_DIR$/template/studentcell/sprofile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/api/get/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/admin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/apps.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/consumers.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/migrations/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/api/get/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/routing.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/templates/messages/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/templates/messages/room.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/urls.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/views.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,8 +31,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -65,7 +53,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$/PycharmProjects/dyc/webtatics" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -84,15 +72,18 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="724" y="301" width="524" height="502" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1587152042851">
+      <screen x="63" y="27" width="1857" height="1053" />
+    </state>
+    <state x="724" y="301" width="524" height="502" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/63.27.1857.1053@63.27.1857.1053" timestamp="1587152042851" />
     <state x="774" y="311" width="424" height="484" key="FileChooserDialogImpl" timestamp="1581704628757">
       <screen x="63" y="27" width="1857" height="1053" />
     </state>
     <state x="774" y="311" width="424" height="484" key="FileChooserDialogImpl/63.27.1857.1053@63.27.1857.1053" timestamp="1581704628757" />
-    <state x="776" y="311" width="424" height="484" key="FileChooserDialogImpl/67.27.1853.1053@67.27.1853.1053" timestamp="1578403799633" />
-    <state x="482" y="188" key="SettingsEditor" timestamp="1578403826253">
-      <screen x="67" y="27" width="1853" height="1053" />
+    <state x="480" y="187" key="SettingsEditor" timestamp="1587205424725">
+      <screen x="63" y="27" width="1857" height="1053" />
     </state>
-    <state x="482" y="188" key="SettingsEditor/67.27.1853.1053@67.27.1853.1053" timestamp="1578403826253" />
+    <state x="480" y="187" key="SettingsEditor/63.27.1857.1053@63.27.1857.1053" timestamp="1587205424725" />
     <state x="163" y="125" width="1657" height="855" key="ShowDiffWithBranchDialog" timestamp="1586339275592">
       <screen x="63" y="27" width="1857" height="1053" />
     </state>
@@ -101,7 +92,6 @@
       <screen x="63" y="27" width="1857" height="1053" />
     </state>
     <state x="646" y="380" key="com.intellij.ide.util.TipDialog/63.27.1857.1053@63.27.1857.1053" timestamp="1586313520425" />
-    <state x="649" y="380" key="com.intellij.ide.util.TipDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1578402384249" />
     <state x="759" y="472" width="454" height="160" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1585676243245">
       <screen x="63" y="27" width="1857" height="1053" />
     </state>
@@ -114,9 +104,5 @@
       <screen x="63" y="27" width="1857" height="1053" />
     </state>
     <state x="654" y="257" width="672" height="678" key="search.everywhere.popup/63.27.1857.1053@63.27.1857.1053" timestamp="1581083248354" />
-    <state x="718" y="385" width="540" height="336" key="vcs.readOnlyHandler.ReadOnlyStatusDialog" timestamp="1578248065924">
-      <screen x="67" y="27" width="1853" height="1053" />
-    </state>
-    <state x="718" y="385" width="540" height="336" key="vcs.readOnlyHandler.ReadOnlyStatusDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1578248065924" />
   </component>
 </project>

@@ -1,5 +1,8 @@
 from django.urls import path
+from django.conf.urls import url
 from . import views, Ajax, models, student
+from rest_framework.urlpatterns import format_suffix_patterns
+
 urlpatterns = [
     path('', views.Entry.homepage, name='HomePage'),
     path('login/', views.Entry.login, name='Login'),
@@ -11,7 +14,7 @@ urlpatterns = [
     path('club/profile/', views.Club.profile_view, name='Dashboard'),
     path('club/addevent/', views.Club.add_event, name='Add Event'),
     path('club/mycell/', views.Club.my_cell, name='Mycell'),
-    #path('update/bprofile/', views.ClubCell.update, name="Update"),
+    # path('update/bprofile/', views.ClubCell.update, name="Update"),
     path('club/eventtodo/<str:event_uen>', views.Club.event_todo_main, name="eventToDo"),
     path('club/eventtodo/', views.Club.events_todo, name="eventToDo"),
 
@@ -44,7 +47,7 @@ urlpatterns = [
 
     path('student/home/', views.Student.home, name='student explore'),
     path('student/profile/', views.Student.profile, name='student profile'),
-        path('student/profile/load', Ajax.StudentLoadHtml.profile_load_event, name='user profile load'),
+    path('student/profile/load', Ajax.StudentLoadHtml.profile_load_event, name='user profile load'),
     path('student/explore/', views.Student.home, name='explore'),
     path('student/posts/', views.Student.posts, name='student posts'),
 
@@ -62,7 +65,7 @@ urlpatterns = [
     path('messages/post_new', views.Message.post_new_message, name='post new msg'),
 
     path('signup/ajax_username_valid/', Ajax.Ajax.validate_username, name='check'),
-    #path('Dashboard/ajax_show_event/', views.Ajax.show_event, name='check'),
-    #path('ajax_event_register/', views.Ajax.event_register, name='check')
+    # path('Dashboard/ajax_show_event/', views.Ajax.show_event, name='check'),
+    # path('ajax_event_register/', views.Ajax.event_register, name='check')
 
 ]
