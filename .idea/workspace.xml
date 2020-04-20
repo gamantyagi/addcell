@@ -2,26 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="809fe728-186f-4cbe-9c91-f9376f2605ee" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/clubcell/api/get/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/clubcell/api/get/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ve/addcell/bin/chardetect" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/addcell/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/addcell/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/addcell/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/addcell/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clubcell/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/messages/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/api/get/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/messages/admin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/messages/apps.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/messages/consumers.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/messages/migrations/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/api/get/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/messages/model.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/messages/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/messages/routing.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/messages/templates/messages/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/messages/templates/messages/room.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/messages/tests.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/messages/urls.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/messages/views.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/clubcell/api/get/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/api/get/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/clubcell/api/get/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/api/get/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/clubcell/api/get/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/api/get/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +38,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$/PycharmProjects/dyc/webtatics" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="file.status.colors" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -80,9 +65,10 @@
       <screen x="63" y="27" width="1857" height="1053" />
     </state>
     <state x="774" y="311" width="424" height="484" key="FileChooserDialogImpl/63.27.1857.1053@63.27.1857.1053" timestamp="1581704628757" />
-    <state x="480" y="187" key="SettingsEditor" timestamp="1587205424725">
-      <screen x="63" y="27" width="1857" height="1053" />
+    <state x="431" y="187" key="SettingsEditor" timestamp="1587408543512">
+      <screen x="0" y="27" width="1920" height="1053" />
     </state>
+    <state x="431" y="187" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1587408543512" />
     <state x="480" y="187" key="SettingsEditor/63.27.1857.1053@63.27.1857.1053" timestamp="1587205424725" />
     <state x="163" y="125" width="1657" height="855" key="ShowDiffWithBranchDialog" timestamp="1586339275592">
       <screen x="63" y="27" width="1857" height="1053" />

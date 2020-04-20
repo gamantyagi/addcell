@@ -23,7 +23,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'versatileimagefield',
     'clubcell.apps.ClubcellConfig',
-    # 'messages.apps.MessagesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
