@@ -296,11 +296,15 @@ class Club:
             event = request.POST['uen']
             if event == '':
                 event = None
+            if request.POST['max'] == '':
+                maxl = 0
+            else:
+                maxl = request.POST.get('max', 0)
             required = request.POST['req'].title()
             new_inp = custom_input(club=user.clubcell, event=event, input_name=request.POST['name'],
-                                   input_reference=request.POST['hint'],
-                                   input_type=request.POST['type'], max_length=request.POST['max'],
-                                   choice_option=request.POST['opt'], required=required)
+                                   input_reference=request.POST.get('hint', ""),
+                                   input_type=request.POST['type'], max_length=maxl,
+                                   choice_option=request.POST.get('opt', ""), required=required)
             new_inp.save()
             html = render_to_string("ajax/custom_inputs.html",
                                     {'custom_inputs': custom_input.objects.filter(club=user.clubcell)
