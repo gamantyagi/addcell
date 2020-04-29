@@ -199,6 +199,42 @@
                           </div>
                       </div>
 
+
+                      <div id="payment_section" style="margin-top:50px;">
+                            <span style="margin-left:10px;font-size:24px;"><u>Configure payment options:</u></span><br>
+                                <span style="margin-left:30px;">Choose payment methods:</span>
+                                    <div style="margin-left:40px;">
+                                        <div class="form-check col-4" data-toggle="tooltip" title="Cash is use for offline payments.">
+                                          <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input inbuiltInputSelection" value="cash"  name="cash" checked>Cash
+                                          </label>
+                                        </div>
+                                        <div class="form-check col-4" data-toggle="tooltip" title="Online payments are under development.">
+                                          <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input inbuiltInputSelection" value="paytm"  name="paytm" disabled>Paytm
+                                          </label>
+                                        </div>
+                                        <div class="form-check col-4" data-toggle="tooltip" title="Online payments are under development">
+                                          <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input inbuiltInputSelection" value="upi"  name="upi" disabled>UPI
+                                          </label>
+                                        </div>
+                                    </div>
+                            <div id="add_cash_receicers">
+                                  <div id="cash_receivers" class="row" style="margin-left:20px; max-height:200px; overflow:auto; border: solid 1px;">
+                                      {% for inp in custoinputs %}
+                                        <div class="form-check col-4" >
+                                          <label class="form-check-label">
+                                            {{inp.input_name}}
+                                          </label>
+                                        </div>
+                                        {% empty %}
+                                            <b>No cash receiver added yet.</b>
+                                      {% endfor %}
+                                  </div>
+                            </div>
+
+                      </div>
                   </div>
 
 
