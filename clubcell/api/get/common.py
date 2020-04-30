@@ -10,7 +10,7 @@ def distinct_messages(request, event_to=None):
         if event_to == "all":
             second_users = (messages.objects.filter(user=user).values('second_user').union(
                 messages.objects.filter(second_user=user).values('user')))
-            msg_query = {"messages": {}}
+            msg_query = {"messages": []}
             chats = set()
             unseen_msg = 0
             for second_user in second_users:
@@ -23,11 +23,12 @@ def distinct_messages(request, event_to=None):
                 chats.add(chat)
             chats = reversed(sorted(chats, key=operator.attrgetter('date_and_time')))
             for i, chat in enumerate(chats):
-                msg_query["messages"].update({i: {"user": chat.user.username,
-                                                  "second_user": chat.second_user.username,
-                                                  "message": chat.message_in,
-                                                  "time": chat.time_old(),
-                                                  "seen": chat.seen}})
+                msg_query["messages"].append([str(i),
+                                              str(chat.user.username),
+                                              str(chat.second_user.username),
+                                              str(chat.message_in),
+                                              str(chat.time_old()),
+                                              str(chat.seen)])
             msg_query.update({"unseen": unseen_msg})
             return msg_query
 
