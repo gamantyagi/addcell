@@ -23,12 +23,15 @@ def distinct_messages(request, event_to=None):
                 chats.add(chat)
             chats = reversed(sorted(chats, key=operator.attrgetter('date_and_time')))
             for i, chat in enumerate(chats):
+                if chat.user == user:   profile_pic = chat.get_profile_pic_second_user()
+                else:   profile_pic = chat.get_profile_pic_user()
                 msg_query["messages"].append([str(i),
                                               str(chat.user.username),
                                               str(chat.second_user.username),
                                               str(chat.message_in),
                                               str(chat.time_old()),
-                                              str(chat.seen)])
+                                              str(chat.seen),
+                                              str(profile_pic)])
             msg_query.update({"unseen": unseen_msg})
             return msg_query
 

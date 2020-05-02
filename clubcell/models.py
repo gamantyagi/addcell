@@ -98,6 +98,12 @@ class messages(models.Model):
         time = send_time.time()
         return [time, date]
 
+    def get_profile_pic_user(self):
+        return self.user.details.profile_pic.thumbnail['100x100']
+
+    def get_profile_pic_second_user(self):
+        return self.second_user.details.profile_pic.thumbnail['100x100']
+
 
 class typing_message(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='typing_message')
