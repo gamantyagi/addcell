@@ -118,7 +118,8 @@ class typing_message(models.Model):
 
 class alerts(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='alerts')
-    second_user = models.ForeignKey(User, related_name='alert_second_user', on_delete=models.CASCADE, default=None, null=True)
+    second_user = models.ForeignKey(User, related_name='alert_second_user', on_delete=models.CASCADE, default=None,
+                                    null=True)
     subject = models.CharField(max_length=120)
     date_and_time = models.DateTimeField(default=django.utils.timezone.now)
     alerts_in = models.CharField(max_length=1000)
@@ -307,7 +308,8 @@ class event_participants(models.Model):
     events = models.ForeignKey(events, on_delete=models.CASCADE, related_name='event_participants')
     present = models.BooleanField(default=False)  # attendance of that event
     payment_method = models.CharField(max_length=50, default="Cash")
-    cash_acceptor = models.ForeignKey(User, on_delete=models.SET_NULL, default=None, null=True, related_name='cash_requests')
+    cash_acceptor = models.ForeignKey(User, on_delete=models.SET_NULL, default=None, null=True,
+                                      related_name='cash_requests')
     payment_done = models.BooleanField(default=False)
     payment_status = models.CharField(max_length=120, default='null')
     personal_info_access = models.CharField(max_length=1000, default="all,")
@@ -406,8 +408,8 @@ class posts(models.Model):
         (IMAGE, 'Image'),
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
-    club = models.ForeignKey(clubcell, on_delete=models.CASCADE)
-    event = models.ForeignKey(events, on_delete=models.CASCADE, blank=True)
+    club = models.ForeignKey(clubcell, on_delete=models.CASCADE, blank=True, null=True)
+    event = models.ForeignKey(events, on_delete=models.CASCADE, blank=True, null=True)
     post_type = models.CharField(max_length=1, choices=POST_TYPE_CHOICE, default=IMAGE)
     image = VersatileImageField(upload_to='posts/images', blank=True)
     video = models.FileField(upload_to='posts/videos', blank=True)
@@ -419,6 +421,18 @@ class posts(models.Model):
         self.views += 1
         self.save()
         return self.views
+    def get_likes(self):
+        return self.like.count()
+    def get_username(self):
+        return self.user.username
+    def get_clubname(self):
+        return self.club.clubname
+    def get_eventname(self):
+        return self.event.event_uen
+    def get_small_image(self):
+        return str(self.image.thumbnail['50x50'])
+    def get_original_image(self):
+        return str(self.image.thumbnail['640x640'])
 
 
 class like(models.Model):
