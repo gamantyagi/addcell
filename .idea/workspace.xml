@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="809fe728-186f-4cbe-9c91-f9376f2605ee" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/clubcell/api/get/post_view.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/__sized__/profile_images/Screenshot_from_2020-01-17_17-09-17-thumbnail-640x640.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clubcell/api/get/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/api/get/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clubcell/api/get/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/api/get/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clubcell/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/clubcell/models.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
